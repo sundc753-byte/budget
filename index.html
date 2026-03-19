@@ -1,4 +1,4 @@
-<!-- 가계부 v1.4.0 | 빌드: 2026.03.19 23:26:20 (KST) -->
+<!-- 가계부 v1.5.0 | 빌드: 2026.03.19 23:59:50 (KST) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -12,29 +12,13 @@
 <link rel="manifest" href="manifest.json"/>
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231D9E75'/%3E%3Ctext x='90' y='120' font-size='90' text-anchor='middle' font-family='system-ui'%3E%F0%9F%92%B0%3C/text%3E%3C/svg%3E"/>
 <style>
-:root{
-  --a:#1D9E75;--al:#E1F5EE;--ad:#085041;
-  --bg:#f8f9fa;--sf:#fff;--tx:#1a1a1a;--t2:#666;
-  --bd:rgba(0,0,0,0.09);--r:14px;
-  --st:env(safe-area-inset-top,0px);
-  --sb:env(safe-area-inset-bottom,0px);
-}
-@media(prefers-color-scheme:dark){
-  :root{--bg:#0f0f0f;--sf:#1c1c1e;--tx:#f0f0f0;--t2:#999;--bd:rgba(255,255,255,0.1);--al:#0F3028;}
-}
+:root{--a:#1D9E75;--al:#E1F5EE;--ad:#085041;--bg:#f8f9fa;--sf:#fff;--tx:#1a1a1a;--t2:#666;--bd:rgba(0,0,0,0.09);--r:14px;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f0f0f;--sf:#1c1c1e;--tx:#f0f0f0;--t2:#999;--bd:rgba(255,255,255,0.1);--al:#0F3028}}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{height:100%}
 body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,'Helvetica Neue',sans-serif;overflow-x:hidden}
-
-/* AUTH */
-#authScreen{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  min-height:100svh;
-  padding:calc(var(--st) + 24px) 24px calc(var(--sb) + 24px);
-  gap:16px;background:var(--bg);overflow-y:auto;
-}
-.auth-logo{font-size:52px}
-.auth-title{font-size:22px;font-weight:700;color:var(--a)}
+#authScreen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100svh;padding:calc(var(--st)+24px) 24px calc(var(--sb)+24px);gap:16px;background:var(--bg);overflow-y:auto}
+.auth-logo{font-size:52px}.auth-title{font-size:22px;font-weight:700;color:var(--a)}
 .auth-sub{font-size:13px;color:var(--t2);text-align:center;line-height:1.6}
 .auth-card{width:100%;max-width:360px;background:var(--sf);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px}
 .auth-tabs{display:flex;background:var(--bg);border-radius:10px;padding:3px}
@@ -43,18 +27,10 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
 .auth-inp{padding:13px 14px;border:1px solid var(--bd);border-radius:10px;font-size:16px;color:var(--tx);background:var(--bg);width:100%;-webkit-appearance:none}
 .auth-inp:focus{outline:none;border-color:var(--a)}
 .auth-btn{padding:14px;background:var(--a);border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;width:100%}
-.auth-btn:disabled{opacity:0.5}
-.auth-err{font-size:13px;color:#A32D2D;text-align:center;min-height:16px}
-
-/* APP SHELL - fixed layout */
+.auth-btn:disabled{opacity:0.5}.auth-err{font-size:13px;color:#A32D2D;text-align:center;min-height:16px}
 #appScreen{display:none;position:fixed;inset:0;flex-direction:column}
 #appScreen.on{display:flex}
-
-.topnav{
-  background:var(--sf);border-bottom:0.5px solid var(--bd);
-  padding:8px 16px 0;flex-shrink:0;
-  padding-top:calc(var(--st) + 8px);
-}
+.topnav{background:var(--sf);border-bottom:0.5px solid var(--bd);padding:8px 16px 0;flex-shrink:0;padding-top:calc(var(--st)+8px)}
 .topnav-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:8px}
 .app-title{font-size:18px;font-weight:700;color:var(--a)}
 .user-info{display:flex;align-items:center;gap:8px;min-width:0}
@@ -63,23 +39,16 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
 .month-row{display:flex;align-items:center;gap:10px;padding-bottom:8px}
 .month-nav-btn{background:var(--bg);border:none;border-radius:8px;width:28px;height:28px;font-size:16px;cursor:pointer;color:var(--tx);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .month-label{font-size:14px;font-weight:600;color:var(--tx)}
-
 .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px 16px;background:var(--sf);flex-shrink:0}
 .metric{background:var(--bg);border-radius:10px;padding:8px 4px;text-align:center}
 .metric .lbl{font-size:10px;color:var(--t2);margin-bottom:3px}
 .metric .val{font-size:13px;font-weight:700;letter-spacing:-0.3px}
 .val.inc{color:#A32D2D}.val.exp{color:#185FA5}.val.pos{color:var(--a)}.val.neg{color:#185FA5}
-
 .sync-bar{height:2px;background:var(--sf);overflow:hidden;flex-shrink:0}
 .sync-line{height:100%;width:0;background:var(--a);transition:width 0.3s}
 .syncing .sync-line{width:100%;transition:width 1.5s}
-
-/* scrollable body */
 .body{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--bg)}
-.panel{display:none;padding:12px 16px 140px}
-.panel.active{display:block}
-
-/* form - single column */
+.panel{display:none;padding:12px 16px 140px}.panel.active{display:block}
 .add-form{background:var(--sf);border-radius:var(--r);padding:14px;margin-bottom:12px}
 .type-toggle{display:flex;gap:6px;margin-bottom:10px}
 .type-btn{flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--bd);font-size:14px;font-weight:600;cursor:pointer;background:none;color:var(--t2)}
@@ -88,18 +57,10 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
 .form-row{display:flex;gap:8px;margin-bottom:8px}
 .field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
 .field label{font-size:11px;color:var(--t2);font-weight:500}
-.field input,.field select{
-  padding:10px 10px;border:1px solid var(--bd);border-radius:10px;
-  font-size:16px;color:var(--tx);background:var(--bg);
-  -webkit-appearance:none;appearance:none;width:100%;
-}
+.field input,.field select{padding:10px;border:1px solid var(--bd);border-radius:10px;font-size:16px;color:var(--tx);background:var(--bg);-webkit-appearance:none;appearance:none;width:100%}
 .field input:focus,.field select:focus{outline:none;border-color:var(--a)}
-.field.full{flex:none;width:100%}
 .add-btn{width:100%;padding:13px;background:var(--a);border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-top:2px}
-.add-btn:active{opacity:0.85}
-.add-btn:disabled{opacity:0.5}
-
-/* tx list */
+.add-btn:active{opacity:0.85}.add-btn:disabled{opacity:0.5}
 .tx-item{display:flex;align-items:center;gap:10px;background:var(--sf);border-radius:12px;padding:12px;margin-bottom:8px}
 .tx-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .tx-info{flex:1;min-width:0}
@@ -111,27 +72,34 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
 .tx-who{font-size:10px;color:var(--t2);background:var(--bg);padding:1px 5px;border-radius:8px}
 .tx-del{background:none;border:none;color:var(--t2);font-size:16px;cursor:pointer;padding:2px;line-height:1}
 .empty{text-align:center;padding:3rem 1rem;color:var(--t2);font-size:14px;line-height:1.8}
-
-/* chart */
 .card{background:var(--sf);border-radius:var(--r);padding:14px;margin-bottom:12px}
-.card-title{font-size:14px;font-weight:600;color:var(--tx);margin-bottom:12px}
+.card-title{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:12px}
 .cat-item{margin-bottom:10px}
 .cat-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
 .cat-name{color:var(--tx);font-weight:500}.cat-val{color:var(--t2)}
 .cat-track{height:7px;background:var(--bg);border-radius:4px;overflow:hidden}
 .cat-fill{height:100%;border-radius:4px;transition:width 0.5s}
-
-/* payment methods */
-.pay-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
-.pay-item{display:flex;align-items:center;gap:12px;background:var(--sf);border-radius:12px;padding:12px 14px}
-.pay-icon{width:36px;height:36px;border-radius:10px;background:var(--al);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.pay-icon svg{width:18px;height:18px;stroke:var(--a);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#barWrap{position:relative;height:160px;width:100%}
+#payBarWrap{position:relative;height:180px;width:100%}
+.budget-item{background:var(--sf);border-radius:12px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.budget-info{flex:1;min-width:0}
+.budget-label{font-size:14px;font-weight:600;color:var(--tx)}
+.budget-sub{font-size:11px;color:var(--t2);margin-top:3px}
+.budget-bar-wrap{height:5px;background:var(--bg);border-radius:3px;overflow:hidden;margin-top:5px}
+.budget-bar{height:100%;border-radius:3px;transition:width 0.5s}
+.budget-del{background:none;border:none;color:var(--t2);font-size:16px;cursor:pointer;padding:2px;line-height:1;flex-shrink:0}
+.alert-badge{display:inline-block;font-size:10px;background:#FCEBEB;color:#A32D2D;padding:2px 6px;border-radius:6px;font-weight:600;margin-left:6px}
+.section-title{font-size:12px;font-weight:600;color:var(--t2);margin-bottom:8px;letter-spacing:0.4px;text-transform:uppercase}
+.setting-form{background:var(--sf);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.chip-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--bd);border-radius:20px;padding:5px 10px;font-size:13px;color:var(--tx)}
+.chip-del{background:none;border:none;color:var(--t2);font-size:14px;cursor:pointer;padding:0;line-height:1;margin-left:2px}
+.pay-item{display:flex;align-items:center;gap:12px;background:var(--bg);border-radius:12px;padding:10px 12px;margin-bottom:6px}
+.pay-icon{width:34px;height:34px;border-radius:10px;background:var(--al);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pay-icon svg{width:16px;height:16px;stroke:var(--a);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .pay-name{flex:1;font-size:14px;font-weight:600;color:var(--tx)}
-.pay-type{font-size:11px;color:var(--t2);background:var(--bg);padding:2px 8px;border-radius:8px}
-.pay-del{background:none;border:none;color:var(--t2);font-size:16px;cursor:pointer;padding:4px;line-height:1}
-.pay-add-form{background:var(--sf);border-radius:var(--r);padding:14px;margin-bottom:12px}
-.pay-add-form .field input,.pay-add-form .field select{font-size:16px}
-.section-title{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:8px;letter-spacing:0.3px}
+.pay-type-badge{font-size:11px;color:var(--t2);background:var(--sf);padding:2px 8px;border-radius:8px;border:0.5px solid var(--bd)}
+.pay-del{background:none;border:none;color:var(--t2);font-size:16px;cursor:pointer;padding:2px;line-height:1}
 .ai-badge{font-size:11px;background:var(--al);color:var(--ad);padding:3px 8px;border-radius:20px;font-weight:600}
 .ai-title-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .ai-result{font-size:14px;color:var(--tx);line-height:1.75;white-space:pre-wrap}
@@ -143,80 +111,17 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
 .key-row input:focus{outline:none;border-color:var(--a)}
 .key-row button{padding:10px 14px;background:var(--a);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;flex-shrink:0}
 .key-note{font-size:12px;color:var(--t2);line-height:1.6;margin-top:10px}
-
-/* bottom bar - liquid glass full width */
-.bottom-bar{
-  position:fixed;bottom:0;left:0;right:0;
-  display:flex;justify-content:center;
-  padding-bottom:calc(var(--sb) + 12px);
-  padding-top:10px;
-  padding-left:20px;
-  padding-right:20px;
-  z-index:100;
-  background:transparent;
-  pointer-events:none;
-}
-.tab-pill{
-  display:flex;align-items:center;gap:2px;
-  width:100%;max-width:500px;
-  background:rgba(255,255,255,0.25);
-  backdrop-filter:blur(40px) saturate(200%) brightness(1.1);
-  -webkit-backdrop-filter:blur(40px) saturate(200%) brightness(1.1);
-  border:0.5px solid rgba(255,255,255,0.6);
-  border-radius:99px;
-  padding:5px;
-  pointer-events:all;
-  box-shadow:
-    0 12px 40px rgba(0,0,0,0.15),
-    0 4px 12px rgba(0,0,0,0.08),
-    inset 0 1.5px 0 rgba(255,255,255,0.8),
-    inset 0 -1px 0 rgba(0,0,0,0.05);
-}
-@media(prefers-color-scheme:dark){
-  .tab-pill{
-    background:rgba(28,28,32,0.6);
-    border-color:rgba(255,255,255,0.14);
-    box-shadow:
-      0 12px 40px rgba(0,0,0,0.5),
-      0 4px 12px rgba(0,0,0,0.3),
-      inset 0 1px 0 rgba(255,255,255,0.1),
-      inset 0 -1px 0 rgba(0,0,0,0.2);
-  }
-}
-.bot-tab{
-  flex:1;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:9px 8px;gap:4px;
-  background:none;border:none;cursor:pointer;
-  color:rgba(120,120,130,0.8);border-radius:94px;
-  transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);
-  -webkit-user-select:none;user-select:none;
-}
-.bot-tab svg{width:22px;height:22px;transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.bot-tab .label{font-size:10px;font-weight:600;letter-spacing:0.2px;transition:all 0.2s}
-.bot-tab.active{
-  background:rgba(255,255,255,0.82);
-  color:var(--a);
-  box-shadow:
-    0 3px 16px rgba(0,0,0,0.12),
-    0 1px 4px rgba(0,0,0,0.06),
-    inset 0 1.5px 0 rgba(255,255,255,1),
-    inset 0 -0.5px 0 rgba(0,0,0,0.04);
-}
-.bot-tab.active svg{transform:scale(1.15)}
-.bot-tab:active{transform:scale(0.94)}
-@media(prefers-color-scheme:dark){
-  .bot-tab{color:rgba(160,160,170,0.7)}
-  .bot-tab.active{
-    background:rgba(255,255,255,0.14);
-    color:var(--a);
-    box-shadow:
-      0 3px 16px rgba(0,0,0,0.35),
-      inset 0 1px 0 rgba(255,255,255,0.18),
-      inset 0 -0.5px 0 rgba(0,0,0,0.15);
-  }
-}
-#barWrap{position:relative;height:160px;width:100%}
+.export-btn{width:100%;padding:13px;background:none;border:1.5px solid var(--a);border-radius:10px;color:var(--a);font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+.export-btn:active{opacity:0.7}
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;padding-bottom:calc(var(--sb)+12px);padding-top:10px;padding-left:16px;padding-right:16px;z-index:100;background:transparent;pointer-events:none}
+.tab-pill{display:flex;align-items:center;gap:2px;width:100%;background:rgba(255,255,255,0.25);backdrop-filter:blur(40px) saturate(200%) brightness(1.1);-webkit-backdrop-filter:blur(40px) saturate(200%) brightness(1.1);border:0.5px solid rgba(255,255,255,0.6);border-radius:99px;padding:5px;pointer-events:all;box-shadow:0 12px 40px rgba(0,0,0,0.15),0 4px 12px rgba(0,0,0,0.08),inset 0 1.5px 0 rgba(255,255,255,0.8),inset 0 -1px 0 rgba(0,0,0,0.05)}
+@media(prefers-color-scheme:dark){.tab-pill{background:rgba(28,28,32,0.6);border-color:rgba(255,255,255,0.14);box-shadow:0 12px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.1)}}
+.bot-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 4px;gap:3px;background:none;border:none;cursor:pointer;color:rgba(120,120,130,0.8);border-radius:94px;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);-webkit-user-select:none;user-select:none}
+.bot-tab svg{width:20px;height:20px;transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bot-tab .label{font-size:9px;font-weight:600;letter-spacing:0.1px}
+.bot-tab.active{background:rgba(255,255,255,0.82);color:var(--a);box-shadow:0 3px 16px rgba(0,0,0,0.12),inset 0 1.5px 0 rgba(255,255,255,1)}
+.bot-tab.active svg{transform:scale(1.15)}.bot-tab:active{transform:scale(0.94)}
+@media(prefers-color-scheme:dark){.bot-tab{color:rgba(160,160,170,0.7)}.bot-tab.active{background:rgba(255,255,255,0.14);color:var(--a)}}
 </style>
 </head>
 <body>
@@ -240,7 +145,7 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
 <div id="appScreen">
   <div class="topnav">
     <div class="topnav-row">
-      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.4.0</span></span>
+      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.5.0</span></span>
       <div class="user-info">
         <span class="user-email" id="userEmail"></span>
         <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -267,34 +172,15 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
           <button class="type-btn inc-btn" id="btnInc" onclick="setType('income')">수입</button>
         </div>
         <div class="form-row">
-          <div class="field">
-            <label>금액 (원)</label>
-            <input type="number" id="txAmt" placeholder="0" inputmode="numeric"/>
-          </div>
-          <div class="field">
-            <label>날짜</label>
-            <input type="date" id="txDate"/>
-          </div>
+          <div class="field"><label>금액 (원)</label><input type="number" id="txAmt" placeholder="0" inputmode="numeric"/></div>
+          <div class="field"><label>날짜</label><input type="date" id="txDate"/></div>
         </div>
         <div class="form-row">
-          <div class="field">
-            <label>카테고리</label>
-            <select id="txCat">
-              <option>식비</option><option>교통</option><option>쇼핑</option>
-              <option>문화·여가</option><option>의료·건강</option><option>통신</option>
-              <option>주거</option><option>교육</option><option>기타</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>결제 수단</label>
-            <select id="txPay"><option value="">선택 안 함</option></select>
-          </div>
+          <div class="field"><label>카테고리</label><select id="txCat"></select></div>
+          <div class="field"><label>결제 수단</label><select id="txPay"><option value="">선택 안 함</option></select></div>
         </div>
         <div class="form-row">
-          <div class="field" style="flex:1">
-            <label>메모</label>
-            <input type="text" id="txNote" placeholder="선택 사항"/>
-          </div>
+          <div class="field"><label>메모</label><input type="text" id="txNote" placeholder="선택 사항"/></div>
         </div>
         <button class="add-btn" id="addBtn" onclick="addTx()">추가하기</button>
       </div>
@@ -303,7 +189,66 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
 
     <div id="p-chart" class="panel">
       <div class="card"><div class="card-title">카테고리별 지출</div><div id="catBars"><div class="empty">지출 데이터가 없어요</div></div></div>
+      <div class="card"><div class="card-title">결제 수단별 지출</div><div id="payBarWrap"><canvas id="payChart"></canvas></div></div>
       <div class="card"><div class="card-title">수입 vs 지출</div><div id="barWrap"><canvas id="barChart"></canvas></div></div>
+      <div class="card">
+        <div class="card-title">내역 내보내기</div>
+        <button class="export-btn" onclick="exportCSV()">
+          <svg style="width:18px;height:18px;stroke:var(--a);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          이번 달 CSV 내보내기
+        </button>
+        <button class="export-btn" onclick="exportCSVAll()">
+          <svg style="width:18px;height:18px;stroke:var(--a);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          전체 기간 CSV 내보내기
+        </button>
+      </div>
+    </div>
+
+    <div id="p-budget" class="panel">
+      <div class="setting-form">
+        <div class="section-title">예산 설정</div>
+        <div class="form-row">
+          <div class="field"><label>카테고리</label><select id="budgetCat"></select></div>
+          <div class="field"><label>월 예산 (원)</label><input type="number" id="budgetAmt" placeholder="0" inputmode="numeric"/></div>
+        </div>
+        <button class="add-btn" onclick="addBudget()">예산 설정하기</button>
+      </div>
+      <div class="section-title">이번 달 예산 현황</div>
+      <div id="budgetList"><div class="empty">설정된 예산이 없어요</div></div>
+    </div>
+
+    <div id="p-settings" class="panel">
+      <div class="setting-form">
+        <div class="section-title">카테고리 관리</div>
+        <div class="form-row">
+          <div class="field"><label>이름</label><input type="text" id="catName" placeholder="예: 반려동물"/></div>
+          <div class="field"><label>종류</label><select id="catKind"><option value="expense">지출</option><option value="income">수입</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>아이콘 (이모지)</label><input type="text" id="catIcon" placeholder="🐶" maxlength="2"/></div>
+        </div>
+        <button class="add-btn" onclick="addCategory()">카테고리 추가</button>
+        <div style="margin-top:14px">
+          <div style="font-size:12px;color:var(--t2);margin-bottom:6px;font-weight:600">지출 카테고리</div>
+          <div class="chip-list" id="expCatChips"></div>
+          <div style="font-size:12px;color:var(--t2);margin:12px 0 6px;font-weight:600">수입 카테고리</div>
+          <div class="chip-list" id="incCatChips"></div>
+        </div>
+      </div>
+      <div class="setting-form">
+        <div class="section-title">결제 수단 관리</div>
+        <div class="form-row">
+          <div class="field"><label>수단 이름</label><input type="text" id="payName" placeholder="예: 신한카드"/></div>
+          <div class="field"><label>종류</label><select id="payType"><option value="카드">카드</option><option value="현금">현금</option><option value="계좌이체">계좌이체</option><option value="간편결제">간편결제</option><option value="기타">기타</option></select></div>
+        </div>
+        <button class="add-btn" onclick="addPayment()">결제 수단 추가</button>
+        <div id="payList" style="margin-top:12px"><div class="empty">등록된 결제 수단이 없어요</div></div>
+      </div>
+      <div class="setting-form">
+        <div class="section-title">Claude API 키</div>
+        <div class="key-row"><input type="password" id="keyInput" placeholder="sk-ant-"/><button onclick="saveKey()">저장</button></div>
+        <div class="key-note" id="keyStatus">Anthropic API 키를 입력하면 AI 분석을 사용할 수 있어요.</div>
+      </div>
     </div>
 
     <div id="p-ai" class="panel">
@@ -312,36 +257,6 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
         <div class="ai-result dim" id="aiResult">이번 달 지출을 AI가 분석해드려요.</div>
         <button class="ai-btn" id="aiBtn" onclick="runAI()">✦ 분석 시작</button>
       </div>
-      <div class="card">
-        <div style="font-size:14px;font-weight:700;margin-bottom:10px">Claude API 키</div>
-        <div class="key-row"><input type="password" id="keyInput" placeholder="sk-ant-"/><button onclick="saveKey()">저장</button></div>
-        <div class="key-note" id="keyStatus">Anthropic API 키를 입력하면 AI 분석을 사용할 수 있어요.</div>
-      </div>
-    </div>
-
-    <div id="p-pay" class="panel">
-      <div class="pay-add-form">
-        <div class="section-title">결제 수단 추가</div>
-        <div class="form-row">
-          <div class="field">
-            <label>수단 이름</label>
-            <input type="text" id="payName" placeholder="예: 신한카드, 현금"/>
-          </div>
-          <div class="field">
-            <label>종류</label>
-            <select id="payType">
-              <option value="카드">카드</option>
-              <option value="현금">현금</option>
-              <option value="계좌이체">계좌이체</option>
-              <option value="간편결제">간편결제</option>
-              <option value="기타">기타</option>
-            </select>
-          </div>
-        </div>
-        <button class="add-btn" onclick="addPayment()">추가하기</button>
-      </div>
-      <div class="section-title">등록된 결제 수단</div>
-      <div class="pay-list" id="payList"><div class="empty">등록된 결제 수단이 없어요</div></div>
     </div>
   </div>
 
@@ -355,13 +270,17 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
         <svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
         <span class="label">분석</span>
       </button>
-      <button class="bot-tab" id="bt-pay" onclick="switchTab('pay',this)">
-        <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/><path d="M14 15h4"/></svg>
-        <span class="label">결제수단</span>
+      <button class="bot-tab" id="bt-budget" onclick="switchTab('budget',this)">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <span class="label">예산</span>
+      </button>
+      <button class="bot-tab" id="bt-settings" onclick="switchTab('settings',this)">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="label">설정</span>
       </button>
       <button class="bot-tab" id="bt-ai" onclick="switchTab('ai',this)">
         <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 3-1.8 5.6-4.5 6.7V17h-5v-1.3C6.8 14.6 5 12 5 9a7 7 0 0 1 7-7z"/><path d="M9 21h6"/><path d="M10 17v4"/><path d="M14 17v4"/></svg>
-        <span class="label">AI 분석</span>
+        <span class="label">AI</span>
       </button>
     </div>
   </div>
@@ -370,36 +289,34 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, collection, addDoc, deleteDoc, doc, orderBy, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, addDoc, deleteDoc, setDoc, doc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-const firebaseConfig={
-  apiKey:"AIzaSyDwzfk7-3P4Afi4d3i965PZNERrFUJrEsM",
-  authDomain:"budget-bbec2.firebaseapp.com",
-  projectId:"budget-bbec2",
-  storageBucket:"budget-bbec2.firebasestorage.app",
-  messagingSenderId:"321441819817",
-  appId:"1:321441819817:web:4c51f2efb940ee3e3e8db8"
-};
-
+const firebaseConfig={apiKey:"AIzaSyDwzfk7-3P4Afi4d3i965PZNERrFUJrEsM",authDomain:"budget-bbec2.firebaseapp.com",projectId:"budget-bbec2",storageBucket:"budget-bbec2.firebasestorage.app",messagingSenderId:"321441819817",appId:"1:321441819817:web:4c51f2efb940ee3e3e8db8"};
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const db=getFirestore(app);
 
-const ICONS={'식비':'🍽','교통':'🚇','쇼핑':'🛍','문화·여가':'🎬','의료·건강':'💊','통신':'📱','주거':'🏠','교육':'📚','급여':'💰','용돈':'💵','기타수입':'💹','기타':'📌'};
-const COLORS={'식비':'#1D9E75','교통':'#185FA5','쇼핑':'#D4537E','문화·여가':'#7F77DD','의료·건강':'#D85A30','통신':'#BA7517','주거':'#3B6D11','교육':'#639922','기타':'#888780'};
+const DEFAULT_EXP=[{name:'식비',icon:'🍽'},{name:'교통',icon:'🚇'},{name:'쇼핑',icon:'🛍'},{name:'문화·여가',icon:'🎬'},{name:'의료·건강',icon:'💊'},{name:'통신',icon:'📱'},{name:'주거',icon:'🏠'},{name:'교육',icon:'📚'},{name:'기타',icon:'📌'}];
+const DEFAULT_INC=[{name:'급여',icon:'💰'},{name:'용돈',icon:'💵'},{name:'기타수입',icon:'💹'}];
+const CCOLORS=['#1D9E75','#185FA5','#D4537E','#7F77DD','#D85A30','#BA7517','#3B6D11','#639922','#888780','#0F6E56','#A32D2D','#0C447C'];
+const CMAP={식비:'#1D9E75',교통:'#185FA5',쇼핑:'#D4537E','문화·여가':'#7F77DD','의료·건강':'#D85A30',통신:'#BA7517',주거:'#3B6D11',교육:'#639922',기타:'#888780',급여:'#185FA5',용돈:'#1D9E75','기타수입':'#0F6E56'};
 const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+const PAYICONS={카드:'<path d="M2 9h20M2 13h6"/>',현금:'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',계좌이체:'<path d="M5 12h14M12 5l7 7-7 7"/>',간편결제:'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',기타:'<circle cx="12" cy="12" r="3"/>'};
 
 let txType='expense',curYear=new Date().getFullYear(),curMonth=new Date().getMonth();
-let txs=[],payments=[],barInst=null,unsub=null,unsubPay=null,currentUser=null;
+let txs=[],payments=[],categories=[],budgets=[],barInst=null,payBarInst=null;
+let unsub=null,unsubPay=null,unsubCat=null,unsubBudget=null,currentUser=null,authMode='login';
 
 const fmt=n=>'₩'+Math.abs(n).toLocaleString('ko-KR');
 const getMonthTx=()=>txs.filter(t=>{const d=new Date(t.date);return d.getFullYear()===curYear&&d.getMonth()===curMonth;}).sort((a,b)=>new Date(b.date)-new Date(a.date));
 const setSyncing=v=>document.getElementById('syncBar').classList.toggle('syncing',v);
+const getExpCats=()=>categories.filter(c=>c.kind==='expense');
+const getIncCats=()=>categories.filter(c=>c.kind==='income');
+const getCatIcon=n=>{const c=categories.find(c=>c.name===n);return c?c.icon:'📌';};
+const getCatColor=n=>CMAP[n]||'#888780';
 
-// AUTH
-let authMode2='login';
 window.switchAuthTab=function(mode){
-  authMode2=mode;
+  authMode=mode;
   document.getElementById('tabLogin').classList.toggle('active',mode==='login');
   document.getElementById('tabSignup').classList.toggle('active',mode==='signup');
   document.getElementById('authBtn').textContent=mode==='login'?'로그인':'회원가입';
@@ -408,20 +325,19 @@ window.switchAuthTab=function(mode){
 window.doAuth=async function(){
   const email=document.getElementById('authEmail').value.trim();
   const pw=document.getElementById('authPw').value;
-  const btn=document.getElementById('authBtn');
-  const err=document.getElementById('authErr');
+  const btn=document.getElementById('authBtn'),err=document.getElementById('authErr');
   if(!email||!pw){err.textContent='이메일과 비밀번호를 입력해주세요';return;}
   btn.disabled=true;btn.textContent='처리 중...';err.textContent='';
   try{
-    if(authMode2==='login') await signInWithEmailAndPassword(auth,email,pw);
+    if(authMode==='login') await signInWithEmailAndPassword(auth,email,pw);
     else await createUserWithEmailAndPassword(auth,email,pw);
   }catch(e){
     const msgs={'auth/user-not-found':'등록되지 않은 이메일이에요','auth/wrong-password':'비밀번호가 틀렸어요','auth/email-already-in-use':'이미 사용 중인 이메일이에요','auth/weak-password':'비밀번호는 6자 이상이어야 해요','auth/invalid-email':'이메일 형식이 올바르지 않아요','auth/invalid-credential':'이메일 또는 비밀번호가 틀렸어요'};
     err.textContent=msgs[e.code]||'오류: '+e.message;
   }
-  btn.disabled=false;btn.textContent=authMode2==='login'?'로그인':'회원가입';
+  btn.disabled=false;btn.textContent=authMode==='login'?'로그인':'회원가입';
 };
-window.doLogout=async function(){if(unsub)unsub();await signOut(auth);};
+window.doLogout=async function(){[unsub,unsubPay,unsubCat,unsubBudget].forEach(u=>{if(u)u();});await signOut(auth);};
 
 onAuthStateChanged(auth,user=>{
   if(user){
@@ -429,28 +345,32 @@ onAuthStateChanged(auth,user=>{
     document.getElementById('authScreen').style.display='none';
     document.getElementById('appScreen').classList.add('on');
     document.getElementById('userEmail').textContent=user.email;
-    subscribe();init();
+    subscribeAll();init();
   }else{
-    currentUser=null;txs=[];
+    currentUser=null;txs=[];payments=[];categories=[];budgets=[];
     document.getElementById('authScreen').style.display='flex';
     document.getElementById('appScreen').classList.remove('on');
-    if(unsub){unsub();unsub=null;}
   }
 });
 
-function subscribe(){
+function subscribeAll(){
   if(unsub)unsub();
   setSyncing(true);
-  unsub=onSnapshot(collection(db,'transactions'),snap=>{
-    txs=snap.docs.map(d=>({id:d.id,...d.data()}));
-    setSyncing(false);refresh();
-  },()=>setSyncing(false));
+  unsub=onSnapshot(collection(db,'transactions'),snap=>{txs=snap.docs.map(d=>({id:d.id,...d.data()}));setSyncing(false);refresh();},()=>setSyncing(false));
   if(unsubPay)unsubPay();
-  unsubPay=onSnapshot(collection(db,'payments'),snap=>{
-    payments=snap.docs.map(d=>({id:d.id,...d.data()}));
-    renderPayments();
-    updatePaySelect();
+  unsubPay=onSnapshot(collection(db,'payments'),snap=>{payments=snap.docs.map(d=>({id:d.id,...d.data()}));renderPayList();updatePaySelect();});
+  if(unsubCat)unsubCat();
+  unsubCat=onSnapshot(collection(db,'categories'),snap=>{
+    categories=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(!categories.length) seedCats();
+    renderCatChips();updateCatSelects();
   });
+  if(unsubBudget)unsubBudget();
+  unsubBudget=onSnapshot(collection(db,'budgets'),snap=>{budgets=snap.docs.map(d=>({id:d.id,...d.data()}));renderBudgets();});
+}
+async function seedCats(){
+  for(const c of DEFAULT_EXP) await addDoc(collection(db,'categories'),{...c,kind:'expense'});
+  for(const c of DEFAULT_INC) await addDoc(collection(db,'categories'),{...c,kind:'income'});
 }
 
 window.addTx=async function(){
@@ -459,75 +379,96 @@ window.addTx=async function(){
   if(!amt||amt<=0||!date){alert('금액과 날짜를 입력해주세요');return;}
   const btn=document.getElementById('addBtn');
   btn.disabled=true;setSyncing(true);
+  const cat=document.getElementById('txCat').value;
   try{
-    await addDoc(collection(db,'transactions'),{
-      type:txType,amount:amt,date,
-      category:document.getElementById('txCat').value,
-      payment:document.getElementById('txPay').value||'',
-      note:document.getElementById('txNote').value.trim(),
-      userEmail:currentUser.email,uid:currentUser.uid,
-      createdAt:serverTimestamp()
-    });
+    await addDoc(collection(db,'transactions'),{type:txType,amount:amt,date,category:cat,payment:document.getElementById('txPay').value||'',note:document.getElementById('txNote').value.trim(),userEmail:currentUser.email,uid:currentUser.uid,createdAt:serverTimestamp()});
     document.getElementById('txAmt').value='';
     document.getElementById('txNote').value='';
+    if(txType==='expense') checkBudget(cat);
   }catch(e){alert('저장 실패: '+e.message);setSyncing(false);}
   btn.disabled=false;
 };
-
-window.delTx=async function(id){
-  if(!confirm('삭제하시겠어요?'))return;
-  setSyncing(true);
-  try{await deleteDoc(doc(db,'transactions',id));}
-  catch(e){alert('삭제 실패: '+e.message);setSyncing(false);}
-};
+window.delTx=async function(id){if(!confirm('삭제하시겠어요?'))return;setSyncing(true);try{await deleteDoc(doc(db,'transactions',id));}catch(e){alert('삭제 실패: '+e.message);setSyncing(false);}};
 
 window.addPayment=async function(){
   const name=document.getElementById('payName').value.trim();
   const type=document.getElementById('payType').value;
   if(!name){alert('수단 이름을 입력해주세요');return;}
   if(payments.find(p=>p.name===name)){alert('이미 등록된 이름이에요');return;}
-  try{
-    await addDoc(collection(db,'payments'),{name,type,createdAt:serverTimestamp()});
-    document.getElementById('payName').value='';
-  }catch(e){alert('저장 실패: '+e.message);}
+  try{await addDoc(collection(db,'payments'),{name,type,createdAt:serverTimestamp()});document.getElementById('payName').value='';}
+  catch(e){alert('저장 실패: '+e.message);}
 };
+window.delPayment=async function(id){if(!confirm('삭제하시겠어요?'))return;try{await deleteDoc(doc(db,'payments',id));}catch(e){alert('삭제 실패: '+e.message);}};
 
-window.delPayment=async function(id){
-  if(!confirm('삭제하시겠어요?'))return;
-  try{await deleteDoc(doc(db,'payments',id));}
-  catch(e){alert('삭제 실패: '+e.message);}
+window.addCategory=async function(){
+  const name=document.getElementById('catName').value.trim();
+  const kind=document.getElementById('catKind').value;
+  const icon=document.getElementById('catIcon').value.trim()||'📌';
+  if(!name){alert('카테고리 이름을 입력해주세요');return;}
+  if(categories.find(c=>c.name===name)){alert('이미 등록된 이름이에요');return;}
+  try{await addDoc(collection(db,'categories'),{name,kind,icon,createdAt:serverTimestamp()});document.getElementById('catName').value='';document.getElementById('catIcon').value='';}
+  catch(e){alert('저장 실패: '+e.message);}
 };
+window.delCategory=async function(id){if(!confirm('삭제하시겠어요?'))return;try{await deleteDoc(doc(db,'categories',id));}catch(e){alert('삭제 실패: '+e.message);}};
 
-const PAY_ICONS={'카드':'<path d="M2 9h20M2 13h6"/>','현금':'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>','계좌이체':'<path d="M5 12h14M12 5l7 7-7 7"/>','간편결제':'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>','기타':'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3"/>'};
+window.addBudget=async function(){
+  const cat=document.getElementById('budgetCat').value;
+  const amt=parseInt(document.getElementById('budgetAmt').value);
+  if(!cat||!amt||amt<=0){alert('카테고리와 예산을 입력해주세요');return;}
+  try{await setDoc(doc(db,'budgets',cat),{category:cat,amount:amt,id:cat,updatedAt:serverTimestamp()});document.getElementById('budgetAmt').value='';alert('✅ '+cat+' 예산이 설정되었어요!');}
+  catch(e){alert('저장 실패: '+e.message);}
+};
+window.delBudget=async function(id){if(!confirm('삭제하시겠어요?'))return;try{await deleteDoc(doc(db,'budgets',id));}catch(e){alert('삭제 실패: '+e.message);}};
 
-function renderPayments(){
-  const el=document.getElementById('payList');
-  if(!payments.length){el.innerHTML='<div class="empty">등록된 결제 수단이 없어요</div>';return;}
-  const sorted=[...payments].sort((a,b)=>a.name.localeCompare(b.name));
-  el.innerHTML=sorted.map(p=>`
-    <div class="pay-item">
-      <div class="pay-icon"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--a);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round">${PAY_ICONS[p.type]||PAY_ICONS['기타']}</svg></div>
-      <span class="pay-name">${p.name}</span>
-      <span class="pay-type">${p.type}</span>
-      <button class="pay-del" onclick="delPayment('${p.id}')">×</button>
-    </div>`).join('');
-}
-
-function updatePaySelect(){
-  const sel=document.getElementById('txPay');
-  const cur=sel.value;
-  sel.innerHTML='<option value="">선택 안 함</option>'+payments.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');
-  if(cur) sel.value=cur;
+function checkBudget(catName){
+  const b=budgets.find(b=>b.category===catName);if(!b)return;
+  const spent=getMonthTx().filter(t=>t.type==='expense'&&t.category===catName).reduce((s,t)=>s+t.amount,0);
+  const pct=Math.round(spent/b.amount*100);
+  if(pct>=100) alert('⚠️ '+catName+' 예산 초과!\n예산: '+fmt(b.amount)+'\n지출: '+fmt(spent));
+  else if(pct>=80) alert('⚡ '+catName+' 예산 80% 초과\n예산: '+fmt(b.amount)+'\n지출: '+fmt(spent)+' ('+pct+'%)');
 }
 
 window.setType=function(type){
   txType=type;
   document.getElementById('btnExp').className='type-btn exp-btn'+(type==='expense'?' active':'');
   document.getElementById('btnInc').className='type-btn inc-btn'+(type==='income'?' active':'');
-  document.getElementById('txCat').innerHTML=type==='income'
-    ?'<option>급여</option><option>용돈</option><option>기타수입</option>'
-    :'<option>식비</option><option>교통</option><option>쇼핑</option><option>문화·여가</option><option>의료·건강</option><option>통신</option><option>주거</option><option>교육</option><option>기타</option>';
+  updateCatSelects();
 };
+function updateCatSelects(){
+  const cats=txType==='expense'?getExpCats():getIncCats();
+  const sel=document.getElementById('txCat'),cur=sel.value;
+  sel.innerHTML=cats.map(c=>'<option value="'+c.name+'">'+c.icon+' '+c.name+'</option>').join('');
+  if(cur&&cats.find(c=>c.name===cur)) sel.value=cur;
+  const bsel=document.getElementById('budgetCat');
+  if(bsel) bsel.innerHTML=getExpCats().map(c=>'<option value="'+c.name+'">'+c.icon+' '+c.name+'</option>').join('');
+}
+function updatePaySelect(){
+  const sel=document.getElementById('txPay'),cur=sel.value;
+  sel.innerHTML='<option value="">선택 안 함</option>'+payments.map(p=>'<option value="'+p.name+'">'+p.name+'</option>').join('');
+  if(cur) sel.value=cur;
+}
+function renderPayList(){
+  const el=document.getElementById('payList');if(!el)return;
+  if(!payments.length){el.innerHTML='<div class="empty">등록된 결제 수단이 없어요</div>';return;}
+  el.innerHTML=payments.sort((a,b)=>a.name.localeCompare(b.name)).map(p=>'<div class="pay-item"><div class="pay-icon"><svg viewBox="0 0 24 24">'+( PAYICONS[p.type]||PAYICONS['기타'])+'</svg></div><span class="pay-name">'+p.name+'</span><span class="pay-type-badge">'+p.type+'</span><button class="pay-del" onclick="delPayment(\''+p.id+'\')">×</button></div>').join('');
+}
+function renderCatChips(){
+  const ee=document.getElementById('expCatChips'),ii=document.getElementById('incCatChips');if(!ee||!ii)return;
+  ee.innerHTML=getExpCats().map(c=>'<div class="chip">'+c.icon+' '+c.name+'<button class="chip-del" onclick="delCategory(\''+c.id+'\')">×</button></div>').join('')||'<span style="font-size:12px;color:var(--t2)">없음</span>';
+  ii.innerHTML=getIncCats().map(c=>'<div class="chip">'+c.icon+' '+c.name+'<button class="chip-del" onclick="delCategory(\''+c.id+'\')">×</button></div>').join('')||'<span style="font-size:12px;color:var(--t2)">없음</span>';
+}
+function renderBudgets(){
+  const el=document.getElementById('budgetList');if(!el)return;
+  if(!budgets.length){el.innerHTML='<div class="empty">설정된 예산이 없어요</div>';return;}
+  const m=getMonthTx();
+  el.innerHTML=budgets.map(b=>{
+    const spent=m.filter(t=>t.type==='expense'&&t.category===b.category).reduce((s,t)=>s+t.amount,0);
+    const pct=Math.min(Math.round(spent/b.amount*100),100);
+    const over=spent>b.amount;
+    const col=over?'#E24B4A':pct>=80?'#BA7517':getCatColor(b.category);
+    return '<div class="budget-item"><div class="budget-info"><div class="budget-label">'+getCatIcon(b.category)+' '+b.category+(over?'<span class="alert-badge">초과</span>':pct>=80?'<span class="alert-badge" style="background:#FAEEDA;color:#633806">80%+</span>':'')+'</div><div class="budget-sub">'+fmt(spent)+' / '+fmt(b.amount)+' ('+pct+'%)</div><div class="budget-bar-wrap"><div class="budget-bar" style="width:'+pct+'%;background:'+col+'"></div></div></div><button class="budget-del" onclick="delBudget(\''+b.id+'\')">×</button></div>';
+  }).join('');
+}
 
 function updateSummary(){
   const m=getMonthTx();
@@ -539,26 +480,12 @@ function updateSummary(){
   const b=document.getElementById('totBal');
   b.textContent=(bal<0?'-':'')+fmt(bal);
   b.className='val '+(bal>=0?'pos':'neg');
-  document.getElementById('monthLabel').textContent=`${curYear}년 ${MONTHS[curMonth]}`;
+  document.getElementById('monthLabel').textContent=curYear+'년 '+MONTHS[curMonth];
 }
-
 function renderList(){
-  const m=getMonthTx();
-  const el=document.getElementById('txList');
+  const m=getMonthTx(),el=document.getElementById('txList');
   if(!m.length){el.innerHTML='<div class="empty">이번 달 기록이 없어요 🌱<br>첫 번째 항목을 추가해보세요</div>';return;}
-  el.innerHTML=m.map(t=>`
-    <div class="tx-item">
-      <div class="tx-icon" style="background:${t.type==='income'?'#E6F1FB':'#FCEBEB'}">${ICONS[t.category]||'📌'}</div>
-      <div class="tx-info">
-        <div class="tx-title">${t.note||t.category}</div>
-        <div class="tx-meta">${t.category}${t.payment?' · '+t.payment:''} · ${t.date}</div>
-      </div>
-      <div class="tx-right">
-        <div class="tx-amount ${t.type==='income'?'inc':'exp'}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>
-        <div class="tx-who">${(t.userEmail||'').split('@')[0]}</div>
-        ${t.uid===currentUser?.uid?`<button class="tx-del" onclick="delTx('${t.id}')">×</button>`:''}
-      </div>
-    </div>`).join('');
+  el.innerHTML=m.map(t=>'<div class="tx-item"><div class="tx-icon" style="background:'+(t.type==='income'?'#FCEBEB':'#E6F1FB')+'">'+getCatIcon(t.category)+'</div><div class="tx-info"><div class="tx-title">'+(t.note||t.category)+'</div><div class="tx-meta">'+t.category+(t.payment?' · '+t.payment:'')+' · '+t.date+'</div></div><div class="tx-right"><div class="tx-amount '+(t.type==='income'?'inc':'exp')+'">'+(t.type==='income'?'+':'-')+fmt(t.amount)+'</div><div class="tx-who">'+((t.userEmail||'').split('@')[0])+'</div>'+(t.uid===currentUser?.uid?'<button class="tx-del" onclick="delTx(\''+t.id+'\')">×</button>':'')+'</div></div>').join('');
 }
 
 window.renderChart=function(){
@@ -567,102 +494,75 @@ window.renderChart=function(){
   m.filter(t=>t.type==='expense').forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
   const sorted=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
   const maxV=sorted.length?sorted[0][1]:1;
-  document.getElementById('catBars').innerHTML=sorted.length?sorted.map(([c,v])=>`
-    <div class="cat-item">
-      <div class="cat-row"><span class="cat-name">${ICONS[c]||''} ${c}</span><span class="cat-val">${fmt(v)}</span></div>
-      <div class="cat-track"><div class="cat-fill" style="width:${Math.round(v/maxV*100)}%;background:${COLORS[c]||'#1D9E75'}"></div></div>
-    </div>`).join(''):'<div class="empty">지출 데이터가 없어요</div>';
+  document.getElementById('catBars').innerHTML=sorted.length?sorted.map(([c,v])=>'<div class="cat-item"><div class="cat-row"><span class="cat-name">'+getCatIcon(c)+' '+c+'</span><span class="cat-val">'+fmt(v)+'</span></div><div class="cat-track"><div class="cat-fill" style="width:'+Math.round(v/maxV*100)+'%;background:'+getCatColor(c)+'"></div></div></div>').join(''):'<div class="empty">지출 데이터가 없어요</div>';
+
+  const payMap={};
+  m.filter(t=>t.type==='expense'&&t.payment).forEach(t=>{payMap[t.payment]=(payMap[t.payment]||0)+t.amount;});
+  const pe=Object.entries(payMap).sort((a,b)=>b[1]-a[1]);
+  if(payBarInst)payBarInst.destroy();
+  const pwrap=document.getElementById('payBarWrap');
+  if(pe.length&&window.Chart){
+    pwrap.innerHTML='<canvas id="payChart"></canvas>';
+    payBarInst=new Chart(document.getElementById('payChart'),{type:'bar',data:{labels:pe.map(e=>e[0]),datasets:[{data:pe.map(e=>e[1]),backgroundColor:CCOLORS.slice(0,pe.length),borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#888',font:{size:12}}},y:{grid:{color:'rgba(128,128,128,0.1)'},ticks:{color:'#888',font:{size:11},callback:v=>'₩'+(v/10000).toFixed(0)+'만'}}}}});
+  } else {
+    pwrap.innerHTML='<div class="empty" style="padding:1rem">결제 수단 데이터가 없어요</div>';
+  }
+
   const inc=m.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
   const expT=m.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   if(barInst)barInst.destroy();
-  if(window.Chart)barInst=new Chart(document.getElementById('barChart'),{
-    type:'bar',
-    data:{labels:['수입','지출'],datasets:[{data:[inc,expT],backgroundColor:['#E24B4A','#378ADD'],borderRadius:8,borderSkipped:false}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#888',font:{size:13}}},y:{grid:{color:'rgba(128,128,128,0.1)'},ticks:{color:'#888',font:{size:11},callback:v=>'₩'+(v/10000).toFixed(0)+'만'}}}}
-  });
+  if(window.Chart) barInst=new Chart(document.getElementById('barChart'),{type:'bar',data:{labels:['수입','지출'],datasets:[{data:[inc,expT],backgroundColor:['#E24B4A','#378ADD'],borderRadius:8,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#888',font:{size:13}}},y:{grid:{color:'rgba(128,128,128,0.1)'},ticks:{color:'#888',font:{size:11},callback:v=>'₩'+(v/10000).toFixed(0)+'만'}}}}});
 };
 
-window.changeMonth=function(d){
-  curMonth+=d;
-  if(curMonth<0){curMonth=11;curYear--;}if(curMonth>11){curMonth=0;curYear++;}
-  refresh();
-};
+function txToCSV(list){
+  const rows=[['날짜','유형','카테고리','결제수단','금액','메모','작성자']];
+  list.sort((a,b)=>a.date.localeCompare(b.date)).forEach(t=>{rows.push([t.date,t.type==='income'?'수입':'지출',t.category,t.payment||'',t.amount,t.note||'',(t.userEmail||'').split('@')[0]]);});
+  return '\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+}
+function dlCSV(content,name){const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(content);a.download=name;a.click();}
+window.exportCSV=function(){const m=getMonthTx();if(!m.length){alert('이번 달 데이터가 없어요');return;}dlCSV(txToCSV(m),'가계부_'+curYear+'년'+MONTHS[curMonth]+'.csv');};
+window.exportCSVAll=function(){if(!txs.length){alert('데이터가 없어요');return;}dlCSV(txToCSV(txs),'가계부_전체.csv');};
 
+window.changeMonth=function(d){curMonth+=d;if(curMonth<0){curMonth=11;curYear--;}if(curMonth>11){curMonth=0;curYear++;}refresh();renderBudgets();};
 window.switchTab=function(name,btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.bot-tab').forEach(b=>b.classList.remove('active'));
   document.getElementById('p-'+name).classList.add('active');
   btn.classList.add('active');
   if(name==='chart')renderChart();
+  if(name==='budget')renderBudgets();
 };
 
 window.runAI=async function(){
   const key=localStorage.getItem('gaebub_key');
-  if(!key){document.getElementById('aiResult').textContent='API 키를 먼저 입력해주세요.';return;}
+  if(!key){document.getElementById('aiResult').textContent='설정 탭에서 API 키를 먼저 입력해주세요.';return;}
   const m=getMonthTx();
   if(!m.length){document.getElementById('aiResult').textContent='이번 달 기록이 없어요.';return;}
   const inc=m.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
   const exp=m.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   const cats={};
   m.filter(t=>t.type==='expense').forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
-  const catStr=Object.entries(cats).map(([k,v])=>`${k}: ${v.toLocaleString()}원`).join(', ');
-  const btn=document.getElementById('aiBtn');
-  const res=document.getElementById('aiResult');
+  const catStr=Object.entries(cats).map(([k,v])=>k+': '+v.toLocaleString()+'원').join(', ');
+  const budStr=budgets.map(b=>{const s=m.filter(t=>t.type==='expense'&&t.category===b.category).reduce((s,t)=>s+t.amount,0);return b.category+' 예산 '+b.amount.toLocaleString()+'원 중 '+s.toLocaleString()+'원 사용';}).join(', ');
+  const btn=document.getElementById('aiBtn'),res=document.getElementById('aiResult');
   btn.disabled=true;btn.textContent='분석 중...';res.className='ai-result dim';res.textContent='AI가 분석하고 있어요...';
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:`이번 달 가계부: 수입 ${inc.toLocaleString()}원, 지출 ${exp.toLocaleString()}원. 카테고리별: ${catStr}. 친절하고 실용적인 한국어로 소비 패턴 분석과 절약 팁을 3~4문장으로 알려주세요.`}]})
-    });
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,messages:[{role:'user',content:'이번 달 가계부:\n수입: '+inc.toLocaleString()+'원, 지출: '+exp.toLocaleString()+'원\n카테고리별: '+catStr+'\n예산 현황: '+(budStr||'없음')+'\n\n친절하고 실용적인 한국어로 소비 패턴 분석, 예산 초과 항목 언급, 절약 팁을 4~5문장으로 알려주세요.'}]})});
     const data=await r.json();
     res.className='ai-result';res.textContent=data.content?.[0]?.text||'오류: '+(data.error?.message||'');
   }catch(e){res.className='ai-result';res.textContent='오류: '+e.message;}
   btn.disabled=false;btn.innerHTML='✦ 다시 분석';
 };
 
-window.saveKey=function(){
-  const k=document.getElementById('keyInput').value.trim();
-  if(!k)return;
-  localStorage.setItem('gaebub_key',k);
-  document.getElementById('keyInput').value='';
-  document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';
-};
+window.saveKey=function(){const k=document.getElementById('keyInput').value.trim();if(!k)return;localStorage.setItem('gaebub_key',k);document.getElementById('keyInput').value='';document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';};
+window.showVersionInfo=function(){if(confirm('가계부 v1.5.0\n빌드: 2026.03.19 23:59:50 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
+window.clearCache=async function(){try{if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistrations();for(const x of r)await x.unregister();}if('caches' in window){const k=await caches.keys();for(const x of k)await caches.delete(x);}alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');window.location.reload(true);}catch(e){alert('오류: '+e.message);}};
 
 function refresh(){updateSummary();renderList();}
-function init(){
-  document.getElementById('txDate').value=new Date().toISOString().split('T')[0];
-  if(localStorage.getItem('gaebub_key'))document.getElementById('keyStatus').textContent='✅ API 키가 설정되어 있어요.';
-  refresh();
-}
+function init(){document.getElementById('txDate').value=new Date().toISOString().split('T')[0];if(localStorage.getItem('gaebub_key'))document.getElementById('keyStatus').textContent='✅ API 키가 설정되어 있어요.';refresh();}
 document.getElementById('authPw').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();});
-
-window.showVersionInfo=function(){
-  if(confirm('가계부 v1.4.0\n빌드: 2026.03.19 23:26:20 (KST)\n\n캐시·쿠키를 초기화하시겠어요?\n(로그아웃 후 새로고침됩니다)')) clearCache();
-};
-
-window.clearCache=async function(){
-  try{
-    if('serviceWorker' in navigator){
-      const regs=await navigator.serviceWorker.getRegistrations();
-      for(const r of regs) await r.unregister();
-    }
-    if('caches' in window){
-      const keys=await caches.keys();
-      for(const k of keys) await caches.delete(k);
-    }
-    alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');
-    window.location.reload(true);
-  }catch(e){
-    alert('오류: '+e.message);
-  }
-};
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script>
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/budget/sw.js',{scope:'/budget/'}).catch(()=>{});
-}
-</script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/budget/sw.js',{scope:'/budget/'}).catch(()=>{});}</script>
 </body>
 </html>
