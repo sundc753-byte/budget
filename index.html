@@ -1,141 +1,154 @@
 <!DOCTYPE html>
-
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="가계부" />
-<meta name="theme-color" content="#1D9E75" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="가계부"/>
+<meta name="theme-color" content="#1D9E75"/>
 <title>가계부</title>
-<link rel="manifest" href="manifest.json" />
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231D9E75'/%3E%3Ctext x='90' y='120' font-size='90' text-anchor='middle' font-family='system-ui'%3E💰%3C/text%3E%3C/svg%3E" />
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231D9E75'/%3E%3Ctext x='90' y='120' font-size='90' text-anchor='middle' font-family='system-ui'%3E%F0%9F%92%B0%3C/text%3E%3C/svg%3E"/>
 <style>
-:root {
-  --accent:#1D9E75; --accent-light:#E1F5EE; --accent-dark:#085041;
-  --bg:#f8f9fa; --surface:#fff; --text:#1a1a1a; --text2:#666;
-  --border:rgba(0,0,0,0.09); --radius:14px;
-  --safe-top:env(safe-area-inset-top,0px); --safe-bottom:env(safe-area-inset-bottom,0px);
+:root{
+  --a:#1D9E75;--al:#E1F5EE;--ad:#085041;
+  --bg:#f8f9fa;--sf:#fff;--tx:#1a1a1a;--t2:#666;
+  --bd:rgba(0,0,0,0.09);--r:14px;
+  --st:env(safe-area-inset-top,0px);
+  --sb:env(safe-area-inset-bottom,0px);
 }
 @media(prefers-color-scheme:dark){
-  :root{ --bg:#0f0f0f; --surface:#1c1c1e; --text:#f0f0f0; --text2:#999; --border:rgba(255,255,255,0.1); --accent-light:#0F3028; }
+  :root{--bg:#0f0f0f;--sf:#1c1c1e;--tx:#f0f0f0;--t2:#999;--bd:rgba(255,255,255,0.1);--al:#0F3028;}
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-family:-apple-system,'Helvetica Neue',sans-serif;overflow:hidden;overflow-x:hidden;width:100%}
-#shell{display:flex;flex-direction:column;height:100%;height:100dvh;width:100%;overflow:hidden}
-.status-space{height:var(--safe-top);background:var(--surface);flex-shrink:0}
+html{height:100%}
+body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,'Helvetica Neue',sans-serif;overflow-x:hidden}
 
-/* AUTH SCREEN */
-#authScreen{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(var(–safe-top) + 2rem) 2rem calc(var(–safe-bottom) + 2rem);gap:1.25rem;background:var(–bg)}
-.auth-logo{font-size:56px;line-height:1;margin-top:1rem}
-.auth-title{font-size:24px;font-weight:700;color:var(–accent);letter-spacing:-0.5px}
-.auth-sub{font-size:14px;color:var(–text2);text-align:center;line-height:1.6}
-.auth-card{width:100%;max-width:340px;background:var(–surface);border-radius:20px;padding:1.5rem;display:flex;flex-direction:column;gap:10px}
-.auth-tabs{display:flex;background:var(–bg);border-radius:10px;padding:3px;margin-bottom:4px}
-.auth-tab{flex:1;padding:8px;text-align:center;font-size:15px;font-weight:500;border:none;background:none;cursor:pointer;border-radius:8px;color:var(–text2);transition:all 0.15s}
-.auth-tab.active{background:var(–surface);color:var(–accent);font-weight:700}
-.auth-input{padding:13px 14px;border:1px solid var(–border);border-radius:10px;font-size:16px;color:var(–text);background:var(–bg);width:100%;-webkit-appearance:none}
-.auth-input:focus{outline:none;border-color:var(–accent)}
-.auth-btn{padding:14px;background:var(–accent);border:none;border-radius:10px;color:white;font-size:16px;font-weight:700;cursor:pointer;width:100%;transition:opacity 0.15s}
-.auth-btn:active{opacity:0.85}
-.auth-btn:disabled{opacity:0.5;cursor:not-allowed}
-.auth-err{font-size:13px;color:#A32D2D;text-align:center;min-height:18px}
+/* AUTH */
+#authScreen{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100svh;
+  padding:calc(var(--st) + 24px) 24px calc(var(--sb) + 24px);
+  gap:16px;background:var(--bg);overflow-y:auto;
+}
+.auth-logo{font-size:52px}
+.auth-title{font-size:22px;font-weight:700;color:var(--a)}
+.auth-sub{font-size:13px;color:var(--t2);text-align:center;line-height:1.6}
+.auth-card{width:100%;max-width:360px;background:var(--sf);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.auth-tabs{display:flex;background:var(--bg);border-radius:10px;padding:3px}
+.auth-tab{flex:1;padding:8px;text-align:center;font-size:15px;font-weight:500;border:none;background:none;cursor:pointer;border-radius:8px;color:var(--t2)}
+.auth-tab.active{background:var(--sf);color:var(--a);font-weight:700}
+.auth-inp{padding:13px 14px;border:1px solid var(--bd);border-radius:10px;font-size:16px;color:var(--tx);background:var(--bg);width:100%;-webkit-appearance:none}
+.auth-inp:focus{outline:none;border-color:var(--a)}
+.auth-btn{padding:14px;background:var(--a);border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;width:100%}
+.auth-btn:disabled{opacity:0.5}
+.auth-err{font-size:13px;color:#A32D2D;text-align:center;min-height:16px}
 
-/* TOP NAV */
-.topnav{background:var(–surface);border-bottom:0.5px solid var(–border);padding:10px 16px 0;display:flex;flex-direction:column;flex-shrink:0}
+/* APP SHELL - fixed layout */
+#appScreen{display:none;position:fixed;inset:0;flex-direction:column}
+#appScreen.on{display:flex}
+
+.topnav{
+  background:var(--sf);border-bottom:0.5px solid var(--bd);
+  padding:8px 16px 0;flex-shrink:0;
+  padding-top:calc(var(--st) + 8px);
+}
 .topnav-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:8px}
-.app-title{font-size:18px;font-weight:700;letter-spacing:-0.5px;color:var(–accent)}
-.user-info{display:flex;align-items:center;gap:8px}
-.user-email{font-size:11px;color:var(–text2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.logout-btn{font-size:12px;color:var(–text2);background:none;border:0.5px solid var(–border);border-radius:6px;padding:4px 8px;cursor:pointer;white-space:nowrap}
-.month-nav{display:flex;align-items:center;gap:10px;padding-bottom:8px}
-.month-nav button{background:var(–bg);border:none;border-radius:8px;width:28px;height:28px;font-size:16px;cursor:pointer;color:var(–text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.month-label{font-size:14px;font-weight:600;color:var(–text)}
+.app-title{font-size:18px;font-weight:700;color:var(--a)}
+.user-info{display:flex;align-items:center;gap:8px;min-width:0}
+.user-email{font-size:11px;color:var(--t2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px}
+.logout-btn{font-size:12px;color:var(--t2);background:none;border:0.5px solid var(--bd);border-radius:6px;padding:4px 8px;cursor:pointer;flex-shrink:0}
+.month-row{display:flex;align-items:center;gap:10px;padding-bottom:8px}
+.month-nav-btn{background:var(--bg);border:none;border-radius:8px;width:28px;height:28px;font-size:16px;cursor:pointer;color:var(--tx);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.month-label{font-size:14px;font-weight:600;color:var(--tx)}
 
-/* SUMMARY */
-.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px 16px;background:var(–surface);flex-shrink:0}
-.metric{background:var(–bg);border-radius:10px;padding:8px 6px;text-align:center}
-.metric .lbl{font-size:10px;color:var(–text2);margin-bottom:3px}
-.metric .val{font-size:14px;font-weight:700;letter-spacing:-0.5px}
-.val.inc{color:#185FA5} .val.exp{color:#A32D2D} .val.pos{color:var(–accent)} .val.neg{color:#A32D2D}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px 16px;background:var(--sf);flex-shrink:0}
+.metric{background:var(--bg);border-radius:10px;padding:8px 4px;text-align:center}
+.metric .lbl{font-size:10px;color:var(--t2);margin-bottom:3px}
+.metric .val{font-size:13px;font-weight:700;letter-spacing:-0.3px}
+.val.inc{color:#185FA5}.val.exp{color:#A32D2D}.val.pos{color:var(--a)}.val.neg{color:#A32D2D}
 
-/* SYNC INDICATOR */
-.sync-bar{height:2px;background:var(–surface);overflow:hidden;flex-shrink:0}
-.sync-bar .sync-line{height:100%;width:0;background:var(–accent);transition:width 0.3s}
-.sync-bar.syncing .sync-line{width:100%;transition:width 1.5s}
+.sync-bar{height:2px;background:var(--sf);overflow:hidden;flex-shrink:0}
+.sync-line{height:100%;width:0;background:var(--a);transition:width 0.3s}
+.syncing .sync-line{width:100%;transition:width 1.5s}
 
-/* BODY */
-.body{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(–bg);min-height:0}
-.panel{display:none;padding:12px 16px;padding-bottom:calc(80px + var(–safe-bottom))}
+/* scrollable body */
+.body{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--bg)}
+.panel{display:none;padding:12px 16px 120px}
 .panel.active{display:block}
 
-/* FORM */
-.add-form{background:var(–surface);border-radius:var(–radius);padding:14px;margin-bottom:12px}
-.type-toggle{display:flex;gap:6px;margin-bottom:12px}
-.type-btn{flex:1;padding:9px;border-radius:10px;border:1.5px solid var(–border);font-size:14px;font-weight:600;cursor:pointer;background:none;color:var(–text2);transition:all 0.15s}
+/* form - single column */
+.add-form{background:var(--sf);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.type-toggle{display:flex;gap:6px;margin-bottom:10px}
+.type-btn{flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--bd);font-size:14px;font-weight:600;cursor:pointer;background:none;color:var(--t2)}
 .type-btn.active.exp-btn{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D}
 .type-btn.active.inc-btn{background:#E6F1FB;border-color:#378ADD;color:#185FA5}
-.fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:8px;width:100%}
-.field{display:flex;flex-direction:column;gap:4px;min-width:0;overflow:hidden}
-.field label{font-size:11px;color:var(–text2);font-weight:500}
-.field input,.field select{padding:9px 8px;border:1px solid var(–border);border-radius:10px;font-size:14px;color:var(–text);background:var(–bg);-webkit-appearance:none;appearance:none;width:100%;min-width:0;display:block}
-.field input[type=“date”]{font-size:13px}
-.field input:focus,.field select:focus{outline:none;border-color:var(–accent)}
-.field.full{grid-column:1/-1}
-.add-btn{width:100%;padding:12px;background:var(–accent);border:none;border-radius:10px;color:white;font-size:16px;font-weight:700;cursor:pointer;margin-top:4px}
-.add-btn:active{opacity:0.85;transform:scale(0.98)}
+.form-row{display:flex;gap:8px;margin-bottom:8px}
+.field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.field label{font-size:11px;color:var(--t2);font-weight:500}
+.field input,.field select{
+  padding:10px 10px;border:1px solid var(--bd);border-radius:10px;
+  font-size:16px;color:var(--tx);background:var(--bg);
+  -webkit-appearance:none;appearance:none;width:100%;
+}
+.field input:focus,.field select:focus{outline:none;border-color:var(--a)}
+.field.full{flex:none;width:100%}
+.add-btn{width:100%;padding:13px;background:var(--a);border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-top:2px}
+.add-btn:active{opacity:0.85}
 .add-btn:disabled{opacity:0.5}
 
-/* TX LIST */
-.tx-item{display:flex;align-items:center;gap:12px;background:var(–surface);border-radius:12px;padding:12px;margin-bottom:8px}
-.tx-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+/* tx list */
+.tx-item{display:flex;align-items:center;gap:10px;background:var(--sf);border-radius:12px;padding:12px;margin-bottom:8px}
+.tx-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .tx-info{flex:1;min-width:0}
-.tx-title{font-size:15px;font-weight:600;color:var(–text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tx-meta{font-size:12px;color:var(–text2);margin-top:2px}
-.tx-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;min-width:0}
-.tx-amount{font-size:15px;font-weight:700;letter-spacing:-0.5px;white-space:nowrap}
-.tx-amount.inc{color:#185FA5} .tx-amount.exp{color:#A32D2D}
-.tx-who{font-size:10px;color:var(–text2);background:var(–bg);padding:2px 6px;border-radius:10px}
-.tx-del{background:none;border:none;color:var(–text2);font-size:18px;cursor:pointer;padding:2px;border-radius:6px;line-height:1}
-.empty{text-align:center;padding:3rem 1rem;color:var(–text2);font-size:14px;line-height:1.8}
+.tx-title{font-size:14px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx-meta{font-size:11px;color:var(--t2);margin-top:2px}
+.tx-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.tx-amount{font-size:14px;font-weight:700;white-space:nowrap}
+.tx-amount.inc{color:#185FA5}.tx-amount.exp{color:#A32D2D}
+.tx-who{font-size:10px;color:var(--t2);background:var(--bg);padding:1px 5px;border-radius:8px}
+.tx-del{background:none;border:none;color:var(--t2);font-size:16px;cursor:pointer;padding:2px;line-height:1}
+.empty{text-align:center;padding:3rem 1rem;color:var(--t2);font-size:14px;line-height:1.8}
 
-/* CHART */
-.card{background:var(–surface);border-radius:var(–radius);padding:14px;margin-bottom:12px}
-.card-title{font-size:14px;font-weight:600;color:var(–text);margin-bottom:12px}
-.cat-item{margin-bottom:12px}
+/* chart */
+.card{background:var(--sf);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.card-title{font-size:14px;font-weight:600;color:var(--tx);margin-bottom:12px}
+.cat-item{margin-bottom:10px}
 .cat-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
-.cat-row .cat-name{color:var(–text);font-weight:500}
-.cat-row .cat-val{color:var(–text2)}
-.cat-track{height:7px;background:var(–bg);border-radius:4px;overflow:hidden}
-.cat-fill{height:100%;border-radius:4px;transition:width 0.5s ease}
+.cat-name{color:var(--tx);font-weight:500}.cat-val{color:var(--t2)}
+.cat-track{height:7px;background:var(--bg);border-radius:4px;overflow:hidden}
+.cat-fill{height:100%;border-radius:4px;transition:width 0.5s}
 
-/* AI */
-.ai-badge{font-size:11px;background:var(–accent-light);color:var(–accent-dark);padding:3px 8px;border-radius:20px;font-weight:600}
+/* ai */
+.ai-badge{font-size:11px;background:var(--al);color:var(--ad);padding:3px 8px;border-radius:20px;font-weight:600}
 .ai-title-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.ai-result{font-size:15px;color:var(–text);line-height:1.75;white-space:pre-wrap}
-.ai-result.dim{color:var(–text2)}
-.ai-btn{display:flex;align-items:center;gap:6px;padding:10px 16px;background:none;border:1px solid var(–border);border-radius:10px;font-size:14px;cursor:pointer;color:var(–text);margin-top:12px}
-.ai-btn:disabled{opacity:0.4;cursor:not-allowed}
-.key-input{display:flex;gap:8px;margin-top:8px}
-.key-input input{flex:1;padding:10px;border:1px solid var(–border);border-radius:10px;font-size:13px;color:var(–text);background:var(–bg);font-family:monospace}
-.key-input input:focus{outline:none;border-color:var(–accent)}
-.key-input button{padding:10px 14px;background:var(–accent);border:none;border-radius:10px;color:white;font-size:14px;font-weight:600;cursor:pointer}
-.key-note{font-size:12px;color:var(–text2);line-height:1.6;margin-top:10px}
+.ai-result{font-size:14px;color:var(--tx);line-height:1.75;white-space:pre-wrap}
+.ai-result.dim{color:var(--t2)}
+.ai-btn{display:flex;align-items:center;gap:6px;padding:10px 16px;background:none;border:1px solid var(--bd);border-radius:10px;font-size:14px;cursor:pointer;color:var(--tx);margin-top:12px}
+.ai-btn:disabled{opacity:0.4}
+.key-row{display:flex;gap:8px;margin-top:8px}
+.key-row input{flex:1;padding:10px;border:1px solid var(--bd);border-radius:10px;font-size:13px;color:var(--tx);background:var(--bg);font-family:monospace;min-width:0}
+.key-row input:focus{outline:none;border-color:var(--a)}
+.key-row button{padding:10px 14px;background:var(--a);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;flex-shrink:0}
+.key-note{font-size:12px;color:var(--t2);line-height:1.6;margin-top:10px}
 
-/* BOTTOM BAR */
-.bottom-bar{background:var(–surface);border-top:0.5px solid var(–border);display:flex;flex-shrink:0;padding-bottom:var(–safe-bottom)}
-.bot-tab{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 8px;background:none;border:none;cursor:pointer;gap:3px;color:var(–text2)}
-.bot-tab .icon{font-size:22px;line-height:1}
+/* bottom bar - fixed */
+.bottom-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--sf);border-top:0.5px solid var(--bd);
+  display:flex;
+  padding-bottom:var(--sb);
+  z-index:100;
+}
+.bot-tab{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 6px;background:none;border:none;cursor:pointer;gap:3px;color:var(--t2)}
+.bot-tab .icon{font-size:20px;line-height:1}
 .bot-tab .label{font-size:10px;font-weight:500}
-.bot-tab.active{color:var(–accent)}
+.bot-tab.active{color:var(--a)}
 #barWrap{position:relative;height:160px;width:100%}
 </style>
-
 </head>
 <body>
-
-<!-- AUTH SCREEN -->
 
 <div id="authScreen">
   <div class="auth-logo">💰</div>
@@ -146,17 +159,14 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
       <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">로그인</button>
       <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">회원가입</button>
     </div>
-    <input class="auth-input" type="email" id="authEmail" placeholder="이메일" autocomplete="email" inputmode="email" />
-    <input class="auth-input" type="password" id="authPw" placeholder="비밀번호 (6자 이상)" autocomplete="current-password" />
+    <input class="auth-inp" type="email" id="authEmail" placeholder="이메일" autocomplete="email" inputmode="email"/>
+    <input class="auth-inp" type="password" id="authPw" placeholder="비밀번호 (6자 이상)" autocomplete="current-password"/>
     <div class="auth-err" id="authErr"></div>
     <button class="auth-btn" id="authBtn" onclick="doAuth()">로그인</button>
   </div>
 </div>
 
-<!-- MAIN APP -->
-
-<div id="appScreen" style="display:none;flex-direction:column;height:100%">
-  <div class="status-space"></div>
+<div id="appScreen">
   <div class="topnav">
     <div class="topnav-row">
       <span class="app-title">💰 가계부</span>
@@ -165,12 +175,10 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
         <button class="logout-btn" onclick="doLogout()">로그아웃</button>
       </div>
     </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:10px">
-      <div class="month-nav">
-        <button onclick="changeMonth(-1)">‹</button>
-        <span class="month-label" id="monthLabel"></span>
-        <button onclick="changeMonth(1)">›</button>
-      </div>
+    <div class="month-row">
+      <button class="month-nav-btn" onclick="changeMonth(-1)">‹</button>
+      <span class="month-label" id="monthLabel"></span>
+      <button class="month-nav-btn" onclick="changeMonth(1)">›</button>
     </div>
     <div class="summary">
       <div class="metric"><div class="lbl">수입</div><div class="val inc" id="totInc">₩0</div></div>
@@ -178,7 +186,7 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
       <div class="metric"><div class="lbl">잔액</div><div class="val" id="totBal">₩0</div></div>
     </div>
   </div>
-  <div class="sync-bar"><div class="sync-line" id="syncLine"></div></div>
+  <div class="sync-bar" id="syncBar"><div class="sync-line" id="syncLine"></div></div>
 
   <div class="body">
     <div id="p-record" class="panel active">
@@ -187,43 +195,58 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
           <button class="type-btn exp-btn active" id="btnExp" onclick="setType('expense')">지출</button>
           <button class="type-btn inc-btn" id="btnInc" onclick="setType('income')">수입</button>
         </div>
-        <div class="fields">
-          <div class="field"><label>금액 (원)</label><input type="number" id="txAmt" placeholder="0" inputmode="numeric" /></div>
-          <div class="field"><label>날짜</label><input type="date" id="txDate" /></div>
-          <div class="field"><label>카테고리</label><select id="txCat"><option>식비</option><option>교통</option><option>쇼핑</option><option>문화·여가</option><option>의료·건강</option><option>통신</option><option>주거</option><option>교육</option><option>기타</option></select></div>
-          <div class="field"><label>메모</label><input type="text" id="txNote" placeholder="선택 사항" /></div>
+        <div class="form-row">
+          <div class="field">
+            <label>금액 (원)</label>
+            <input type="number" id="txAmt" placeholder="0" inputmode="numeric"/>
+          </div>
+          <div class="field">
+            <label>날짜</label>
+            <input type="date" id="txDate"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label>카테고리</label>
+            <select id="txCat">
+              <option>식비</option><option>교통</option><option>쇼핑</option>
+              <option>문화·여가</option><option>의료·건강</option><option>통신</option>
+              <option>주거</option><option>교육</option><option>기타</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>메모</label>
+            <input type="text" id="txNote" placeholder="선택 사항"/>
+          </div>
         </div>
         <button class="add-btn" id="addBtn" onclick="addTx()">추가하기</button>
       </div>
       <div id="txList"></div>
     </div>
 
-```
-<div id="p-chart" class="panel">
-  <div class="card"><div class="card-title">카테고리별 지출</div><div id="catBars"><div class="empty">지출 데이터가 없어요</div></div></div>
-  <div class="card"><div class="card-title">수입 vs 지출</div><div id="barWrap"><canvas id="barChart"></canvas></div></div>
-</div>
+    <div id="p-chart" class="panel">
+      <div class="card"><div class="card-title">카테고리별 지출</div><div id="catBars"><div class="empty">지출 데이터가 없어요</div></div></div>
+      <div class="card"><div class="card-title">수입 vs 지출</div><div id="barWrap"><canvas id="barChart"></canvas></div></div>
+    </div>
 
-<div id="p-ai" class="panel">
-  <div class="card">
-    <div class="ai-title-row"><span style="font-size:16px;font-weight:700">AI 소비 분석</span><span class="ai-badge">Claude AI</span></div>
-    <div class="ai-result dim" id="aiResult">이번 달 지출을 AI가 분석해드려요.</div>
-    <button class="ai-btn" id="aiBtn" onclick="runAI()">✦ 분석 시작</button>
-  </div>
-  <div class="card">
-    <div style="font-size:15px;font-weight:700;margin-bottom:10px">Claude API 키</div>
-    <div class="key-input"><input type="password" id="keyInput" placeholder="sk-ant-..." /><button onclick="saveKey()">저장</button></div>
-    <div class="key-note" id="keyStatus">Anthropic API 키를 입력하면 AI 분석을 사용할 수 있어요.</div>
-  </div>
-</div>
-```
-
+    <div id="p-ai" class="panel">
+      <div class="card">
+        <div class="ai-title-row"><span style="font-size:15px;font-weight:700">AI 소비 분석</span><span class="ai-badge">Claude AI</span></div>
+        <div class="ai-result dim" id="aiResult">이번 달 지출을 AI가 분석해드려요.</div>
+        <button class="ai-btn" id="aiBtn" onclick="runAI()">✦ 분석 시작</button>
+      </div>
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;margin-bottom:10px">Claude API 키</div>
+        <div class="key-row"><input type="password" id="keyInput" placeholder="sk-ant-"/><button onclick="saveKey()">저장</button></div>
+        <div class="key-note" id="keyStatus">Anthropic API 키를 입력하면 AI 분석을 사용할 수 있어요.</div>
+      </div>
+    </div>
   </div>
 
   <div class="bottom-bar">
-    <button class="bot-tab active" onclick="switchTab('record',this)"><span class="icon">📝</span><span class="label">기록</span></button>
-    <button class="bot-tab" onclick="switchTab('chart',this)"><span class="icon">📊</span><span class="label">분석</span></button>
-    <button class="bot-tab" onclick="switchTab('ai',this)"><span class="icon">✦</span><span class="label">AI 분석</span></button>
+    <button class="bot-tab active" id="bt-record" onclick="switchTab('record',this)"><span class="icon">📝</span><span class="label">기록</span></button>
+    <button class="bot-tab" id="bt-chart" onclick="switchTab('chart',this)"><span class="icon">📊</span><span class="label">분석</span></button>
+    <button class="bot-tab" id="bt-ai" onclick="switchTab('ai',this)"><span class="icon">✦</span><span class="label">AI 분석</span></button>
   </div>
 </div>
 
@@ -232,140 +255,113 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { getFirestore, collection, addDoc, deleteDoc, doc, orderBy, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDwzfk7-3P4Afi4d3i965PZNERrFUJrEsM",
-  authDomain: "budget-bbec2.firebaseapp.com",
-  projectId: "budget-bbec2",
-  storageBucket: "budget-bbec2.firebasestorage.app",
-  messagingSenderId: "321441819817",
-  appId: "1:321441819817:web:4c51f2efb940ee3e3e8db8"
+const firebaseConfig={
+  apiKey:"AIzaSyDwzfk7-3P4Afi4d3i965PZNERrFUJrEsM",
+  authDomain:"budget-bbec2.firebaseapp.com",
+  projectId:"budget-bbec2",
+  storageBucket:"budget-bbec2.firebasestorage.app",
+  messagingSenderId:"321441819817",
+  appId:"1:321441819817:web:4c51f2efb940ee3e3e8db8"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
 
-const ICONS = {'식비':'🍽','교통':'🚇','쇼핑':'🛍','문화·여가':'🎬','의료·건강':'💊','통신':'📱','주거':'🏠','교육':'📚','급여':'💰','용돈':'💵','기타수입':'💹','기타':'📌'};
-const COLORS = {'식비':'#1D9E75','교통':'#185FA5','쇼핑':'#D4537E','문화·여가':'#7F77DD','의료·건강':'#D85A30','통신':'#BA7517','주거':'#3B6D11','교육':'#639922','기타':'#888780'};
-const MONTHS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+const ICONS={'식비':'🍽','교통':'🚇','쇼핑':'🛍','문화·여가':'🎬','의료·건강':'💊','통신':'📱','주거':'🏠','교육':'📚','급여':'💰','용돈':'💵','기타수입':'💹','기타':'📌'};
+const COLORS={'식비':'#1D9E75','교통':'#185FA5','쇼핑':'#D4537E','문화·여가':'#7F77DD','의료·건강':'#D85A30','통신':'#BA7517','주거':'#3B6D11','교육':'#639922','기타':'#888780'};
+const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
-let txType = 'expense';
-let curYear = new Date().getFullYear();
-let curMonth = new Date().getMonth();
-let txs = [];
-let barInst = null;
-let unsubscribe = null;
-let currentUser = null;
+let txType='expense',curYear=new Date().getFullYear(),curMonth=new Date().getMonth();
+let txs=[],barInst=null,unsub=null,currentUser=null,authMode='login';
 
-function fmt(n){ return '₩'+Math.abs(n).toLocaleString('ko-KR'); }
-function getMonthTx(){ return txs.filter(t=>{ const d=new Date(t.date); return d.getFullYear()===curYear&&d.getMonth()===curMonth; }).sort((a,b)=>new Date(b.date)-new Date(a.date)); }
-
-function setSyncing(v){
-  const el = document.getElementById('syncLine');
-  el.parentElement.classList.toggle('syncing', v);
-}
+const fmt=n=>'₩'+Math.abs(n).toLocaleString('ko-KR');
+const getMonthTx=()=>txs.filter(t=>{const d=new Date(t.date);return d.getFullYear()===curYear&&d.getMonth()===curMonth;}).sort((a,b)=>new Date(b.date)-new Date(a.date));
+const setSyncing=v=>document.getElementById('syncBar').classList.toggle('syncing',v);
 
 // AUTH
-let authMode = 'login';
-
-window.switchAuthTab = function(mode){
-  authMode = mode;
-  document.getElementById('tabLogin').classList.toggle('active', mode==='login');
-  document.getElementById('tabSignup').classList.toggle('active', mode==='signup');
-  document.getElementById('authBtn').textContent = mode==='login'?'로그인':'회원가입';
+let authMode2='login';
+window.switchAuthTab=function(mode){
+  authMode2=mode;
+  document.getElementById('tabLogin').classList.toggle('active',mode==='login');
+  document.getElementById('tabSignup').classList.toggle('active',mode==='signup');
+  document.getElementById('authBtn').textContent=mode==='login'?'로그인':'회원가입';
   document.getElementById('authErr').textContent='';
 };
-
-window.doAuth = async function(){
-  const email = document.getElementById('authEmail').value.trim();
-  const pw = document.getElementById('authPw').value;
-  const btn = document.getElementById('authBtn');
-  const err = document.getElementById('authErr');
-  if(!email||!pw){ err.textContent='이메일과 비밀번호를 입력해주세요'; return; }
-  btn.disabled=true; btn.textContent='처리 중...'; err.textContent='';
-  try {
-    if(authMode==='login') await signInWithEmailAndPassword(auth,email,pw);
+window.doAuth=async function(){
+  const email=document.getElementById('authEmail').value.trim();
+  const pw=document.getElementById('authPw').value;
+  const btn=document.getElementById('authBtn');
+  const err=document.getElementById('authErr');
+  if(!email||!pw){err.textContent='이메일과 비밀번호를 입력해주세요';return;}
+  btn.disabled=true;btn.textContent='처리 중...';err.textContent='';
+  try{
+    if(authMode2==='login') await signInWithEmailAndPassword(auth,email,pw);
     else await createUserWithEmailAndPassword(auth,email,pw);
-  } catch(e){
+  }catch(e){
     const msgs={'auth/user-not-found':'등록되지 않은 이메일이에요','auth/wrong-password':'비밀번호가 틀렸어요','auth/email-already-in-use':'이미 사용 중인 이메일이에요','auth/weak-password':'비밀번호는 6자 이상이어야 해요','auth/invalid-email':'이메일 형식이 올바르지 않아요','auth/invalid-credential':'이메일 또는 비밀번호가 틀렸어요'};
     err.textContent=msgs[e.code]||'오류: '+e.message;
   }
-  btn.disabled=false; btn.textContent=authMode==='login'?'로그인':'회원가입';
+  btn.disabled=false;btn.textContent=authMode2==='login'?'로그인':'회원가입';
 };
+window.doLogout=async function(){if(unsub)unsub();await signOut(auth);};
 
-window.doLogout = async function(){
-  if(unsubscribe) unsubscribe();
-  await signOut(auth);
-};
-
-// AUTH STATE
-onAuthStateChanged(auth, user=>{
+onAuthStateChanged(auth,user=>{
   if(user){
-    currentUser = user;
+    currentUser=user;
     document.getElementById('authScreen').style.display='none';
-    document.getElementById('appScreen').style.display='flex';
+    document.getElementById('appScreen').classList.add('on');
     document.getElementById('userEmail').textContent=user.email;
-    subscribeTransactions();
-    init();
-  } else {
-    currentUser = null;
-    txs = [];
+    subscribe();init();
+  }else{
+    currentUser=null;txs=[];
     document.getElementById('authScreen').style.display='flex';
-    document.getElementById('appScreen').style.display='none';
-    if(unsubscribe){ unsubscribe(); unsubscribe=null; }
+    document.getElementById('appScreen').classList.remove('on');
+    if(unsub){unsub();unsub=null;}
   }
 });
 
-// FIRESTORE
-function subscribeTransactions(){
-  if(unsubscribe) unsubscribe();
+function subscribe(){
+  if(unsub)unsub();
   setSyncing(true);
-  const q = query(collection(db,'transactions'), orderBy('createdAt','desc'));
-  unsubscribe = onSnapshot(q, snap=>{
-    txs = snap.docs.map(d=>({id:d.id,...d.data()}));
-    setSyncing(false);
-    refresh();
-  }, ()=>setSyncing(false));
+  unsub=onSnapshot(collection(db,'transactions'),snap=>{
+    txs=snap.docs.map(d=>({id:d.id,...d.data()}));
+    setSyncing(false);refresh();
+  },()=>setSyncing(false));
 }
 
-window.addTx = async function(){
-  const amt = parseInt(document.getElementById('txAmt').value);
-  const date = document.getElementById('txDate').value;
-  if(!amt||amt<=0||!date){ alert('금액과 날짜를 입력해주세요'); return; }
-  const btn = document.getElementById('addBtn');
-  btn.disabled=true;
-  setSyncing(true);
-  try {
+window.addTx=async function(){
+  const amt=parseInt(document.getElementById('txAmt').value);
+  const date=document.getElementById('txDate').value;
+  if(!amt||amt<=0||!date){alert('금액과 날짜를 입력해주세요');return;}
+  const btn=document.getElementById('addBtn');
+  btn.disabled=true;setSyncing(true);
+  try{
     await addDoc(collection(db,'transactions'),{
-      type: txType,
-      amount: amt,
-      date,
-      category: document.getElementById('txCat').value,
-      note: document.getElementById('txNote').value.trim(),
-      userEmail: currentUser.email,
-      uid: currentUser.uid,
-      createdAt: serverTimestamp()
+      type:txType,amount:amt,date,
+      category:document.getElementById('txCat').value,
+      note:document.getElementById('txNote').value.trim(),
+      userEmail:currentUser.email,uid:currentUser.uid,
+      createdAt:serverTimestamp()
     });
     document.getElementById('txAmt').value='';
     document.getElementById('txNote').value='';
-  } catch(e){ alert('저장 실패: '+e.message); setSyncing(false); }
+  }catch(e){alert('저장 실패: '+e.message);setSyncing(false);}
   btn.disabled=false;
 };
 
-window.delTx = async function(id){
-  if(!confirm('삭제하시겠어요?')) return;
+window.delTx=async function(id){
+  if(!confirm('삭제하시겠어요?'))return;
   setSyncing(true);
-  try { await deleteDoc(doc(db,'transactions',id)); }
-  catch(e){ alert('삭제 실패: '+e.message); setSyncing(false); }
+  try{await deleteDoc(doc(db,'transactions',id));}
+  catch(e){alert('삭제 실패: '+e.message);setSyncing(false);}
 };
 
-// UI
-window.setType = function(type){
+window.setType=function(type){
   txType=type;
   document.getElementById('btnExp').className='type-btn exp-btn'+(type==='expense'?' active':'');
   document.getElementById('btnInc').className='type-btn inc-btn'+(type==='income'?' active':'');
-  const c=document.getElementById('txCat');
-  c.innerHTML=type==='income'
+  document.getElementById('txCat').innerHTML=type==='income'
     ?'<option>급여</option><option>용돈</option><option>기타수입</option>'
     :'<option>식비</option><option>교통</option><option>쇼핑</option><option>문화·여가</option><option>의료·건강</option><option>통신</option><option>주거</option><option>교육</option><option>기타</option>';
 };
@@ -386,7 +382,7 @@ function updateSummary(){
 function renderList(){
   const m=getMonthTx();
   const el=document.getElementById('txList');
-  if(!m.length){ el.innerHTML='<div class="empty">이번 달 기록이 없어요 🌱<br>첫 번째 항목을 추가해보세요</div>'; return; }
+  if(!m.length){el.innerHTML='<div class="empty">이번 달 기록이 없어요 🌱<br>첫 번째 항목을 추가해보세요</div>';return;}
   el.innerHTML=m.map(t=>`
     <div class="tx-item">
       <div class="tx-icon" style="background:${t.type==='income'?'#E6F1FB':'#FCEBEB'}">${ICONS[t.category]||'📌'}</div>
@@ -402,11 +398,10 @@ function renderList(){
     </div>`).join('');
 }
 
-window.renderChart = function(){
+window.renderChart=function(){
   const m=getMonthTx();
-  const exp=m.filter(t=>t.type==='expense');
   const cats={};
-  exp.forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
+  m.filter(t=>t.type==='expense').forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
   const sorted=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
   const maxV=sorted.length?sorted[0][1]:1;
   document.getElementById('catBars').innerHTML=sorted.length?sorted.map(([c,v])=>`
@@ -414,36 +409,35 @@ window.renderChart = function(){
       <div class="cat-row"><span class="cat-name">${ICONS[c]||''} ${c}</span><span class="cat-val">${fmt(v)}</span></div>
       <div class="cat-track"><div class="cat-fill" style="width:${Math.round(v/maxV*100)}%;background:${COLORS[c]||'#1D9E75'}"></div></div>
     </div>`).join(''):'<div class="empty">지출 데이터가 없어요</div>';
-
   const inc=m.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
   const expT=m.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-  if(barInst) barInst.destroy();
-  if(window.Chart) barInst=new Chart(document.getElementById('barChart'),{
+  if(barInst)barInst.destroy();
+  if(window.Chart)barInst=new Chart(document.getElementById('barChart'),{
     type:'bar',
     data:{labels:['수입','지출'],datasets:[{data:[inc,expT],backgroundColor:['#378ADD','#E24B4A'],borderRadius:8,borderSkipped:false}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#888',font:{size:13}}},y:{grid:{color:'rgba(128,128,128,0.1)'},ticks:{color:'#888',font:{size:11},callback:v=>'₩'+(v/10000).toFixed(0)+'만'}}}}
   });
 };
 
-window.changeMonth = function(d){
+window.changeMonth=function(d){
   curMonth+=d;
-  if(curMonth<0){curMonth=11;curYear--;} if(curMonth>11){curMonth=0;curYear++;}
+  if(curMonth<0){curMonth=11;curYear--;}if(curMonth>11){curMonth=0;curYear++;}
   refresh();
 };
 
-window.switchTab = function(name,btn){
+window.switchTab=function(name,btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.bot-tab').forEach(b=>b.classList.remove('active'));
   document.getElementById('p-'+name).classList.add('active');
   btn.classList.add('active');
-  if(name==='chart') renderChart();
+  if(name==='chart')renderChart();
 };
 
-window.runAI = async function(){
+window.runAI=async function(){
   const key=localStorage.getItem('gaebub_key');
-  if(!key){ document.getElementById('aiResult').textContent='API 키를 먼저 입력해주세요.'; return; }
+  if(!key){document.getElementById('aiResult').textContent='API 키를 먼저 입력해주세요.';return;}
   const m=getMonthTx();
-  if(!m.length){ document.getElementById('aiResult').textContent='이번 달 기록이 없어요.'; return; }
+  if(!m.length){document.getElementById('aiResult').textContent='이번 달 기록이 없어요.';return;}
   const inc=m.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
   const exp=m.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   const cats={};
@@ -451,45 +445,40 @@ window.runAI = async function(){
   const catStr=Object.entries(cats).map(([k,v])=>`${k}: ${v.toLocaleString()}원`).join(', ');
   const btn=document.getElementById('aiBtn');
   const res=document.getElementById('aiResult');
-  btn.disabled=true; btn.textContent='분석 중...'; res.className='ai-result dim'; res.textContent='AI가 분석하고 있어요...';
-  try {
+  btn.disabled=true;btn.textContent='분석 중...';res.className='ai-result dim';res.textContent='AI가 분석하고 있어요...';
+  try{
     const r=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:`이번 달 가계부: 수입 ${inc.toLocaleString()}원, 지출 ${exp.toLocaleString()}원. 카테고리별: ${catStr}. 친절하고 실용적인 한국어로 소비 패턴 분석과 절약 팁을 3~4문장으로 알려주세요.`}]})
     });
     const data=await r.json();
-    res.className='ai-result'; res.textContent=data.content?.[0]?.text||'API 오류: '+(data.error?.message||JSON.stringify(data));
-  } catch(e){ res.className='ai-result'; res.textContent='오류: '+e.message; }
-  btn.disabled=false; btn.innerHTML='✦ 다시 분석';
+    res.className='ai-result';res.textContent=data.content?.[0]?.text||'오류: '+(data.error?.message||'');
+  }catch(e){res.className='ai-result';res.textContent='오류: '+e.message;}
+  btn.disabled=false;btn.innerHTML='✦ 다시 분석';
 };
 
-window.saveKey = function(){
+window.saveKey=function(){
   const k=document.getElementById('keyInput').value.trim();
-  if(!k) return;
+  if(!k)return;
   localStorage.setItem('gaebub_key',k);
   document.getElementById('keyInput').value='';
   document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';
 };
 
-function refresh(){ updateSummary(); renderList(); }
-
+function refresh(){updateSummary();renderList();}
 function init(){
   document.getElementById('txDate').value=new Date().toISOString().split('T')[0];
-  if(localStorage.getItem('gaebub_key')) document.getElementById('keyStatus').textContent='✅ API 키가 설정되어 있어요.';
+  if(localStorage.getItem('gaebub_key'))document.getElementById('keyStatus').textContent='✅ API 키가 설정되어 있어요.';
   refresh();
 }
-
-document.getElementById('authPw').addEventListener('keydown', e=>{ if(e.key==='Enter') doAuth(); });
+document.getElementById('authPw').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();});
 </script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-
 <script>
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/budget/sw.js',{scope:'/budget/'}).catch(()=>{});
 }
 </script>
-
 </body>
 </html>
