@@ -1,4 +1,4 @@
-const CACHE = 'gaebub-v2';
+const CACHE = 'gaebub-v3';
 const ASSETS = ['/budget/', '/budget/index.html'];
 
 self.addEventListener('install', e => {
