@@ -21,53 +21,52 @@
   :root{ --bg:#0f0f0f; --surface:#1c1c1e; --text:#f0f0f0; --text2:#999; --border:rgba(255,255,255,0.1); --accent-light:#0F3028; }
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,'Helvetica Neue',sans-serif;overflow:hidden}
-#shell{display:flex;flex-direction:column;height:100%;max-width:430px;margin:0 auto}
-.status-space{height:var(--safe-top);background:var(--surface)}
+html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-family:-apple-system,'Helvetica Neue',sans-serif;overflow:hidden}
+#shell{display:flex;flex-direction:column;height:100%;height:100dvh;max-width:600px;margin:0 auto}
+.status-space{height:var(--safe-top);background:var(--surface);flex-shrink:0}
 
 /* AUTH SCREEN */
-#authScreen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:2rem;gap:1.5rem}
-.auth-logo{font-size:56px;line-height:1}
+#authScreen{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(var(--safe-top) + 2rem) 2rem calc(var(--safe-bottom) + 2rem);gap:1.25rem;background:var(--bg)}
+.auth-logo{font-size:56px;line-height:1;margin-top:1rem}
 .auth-title{font-size:24px;font-weight:700;color:var(--accent);letter-spacing:-0.5px}
 .auth-sub{font-size:14px;color:var(--text2);text-align:center;line-height:1.6}
 .auth-card{width:100%;max-width:340px;background:var(--surface);border-radius:20px;padding:1.5rem;display:flex;flex-direction:column;gap:10px}
 .auth-tabs{display:flex;background:var(--bg);border-radius:10px;padding:3px;margin-bottom:4px}
-.auth-tab{flex:1;padding:7px;text-align:center;font-size:14px;font-weight:500;border:none;background:none;cursor:pointer;border-radius:8px;color:var(--text2);transition:all 0.15s}
+.auth-tab{flex:1;padding:8px;text-align:center;font-size:15px;font-weight:500;border:none;background:none;cursor:pointer;border-radius:8px;color:var(--text2);transition:all 0.15s}
 .auth-tab.active{background:var(--surface);color:var(--accent);font-weight:700}
-.auth-input{padding:12px 14px;border:1px solid var(--border);border-radius:10px;font-size:15px;color:var(--text);background:var(--bg);width:100%;-webkit-appearance:none}
+.auth-input{padding:13px 14px;border:1px solid var(--border);border-radius:10px;font-size:16px;color:var(--text);background:var(--bg);width:100%;-webkit-appearance:none}
 .auth-input:focus{outline:none;border-color:var(--accent)}
-.auth-btn{padding:13px;background:var(--accent);border:none;border-radius:10px;color:white;font-size:16px;font-weight:700;cursor:pointer;width:100%;transition:opacity 0.15s}
+.auth-btn{padding:14px;background:var(--accent);border:none;border-radius:10px;color:white;font-size:16px;font-weight:700;cursor:pointer;width:100%;transition:opacity 0.15s}
 .auth-btn:active{opacity:0.85}
 .auth-btn:disabled{opacity:0.5;cursor:not-allowed}
 .auth-err{font-size:13px;color:#A32D2D;text-align:center;min-height:18px}
-.auth-divider{text-align:center;font-size:12px;color:var(--text2);margin:4px 0}
 
 /* TOP NAV */
-.topnav{background:var(--surface);border-bottom:0.5px solid var(--border);padding:12px 16px 0;display:flex;flex-direction:column;gap:0}
-.topnav-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px}
-.app-title{font-size:20px;font-weight:700;letter-spacing:-0.5px;color:var(--accent)}
+.topnav{background:var(--surface);border-bottom:0.5px solid var(--border);padding:10px 16px 0;display:flex;flex-direction:column;flex-shrink:0}
+.topnav-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:8px}
+.app-title{font-size:18px;font-weight:700;letter-spacing:-0.5px;color:var(--accent)}
 .user-info{display:flex;align-items:center;gap:8px}
-.user-email{font-size:11px;color:var(--text2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.logout-btn{font-size:12px;color:var(--text2);background:none;border:0.5px solid var(--border);border-radius:6px;padding:4px 8px;cursor:pointer}
-.month-nav{display:flex;align-items:center;gap:10px;padding-bottom:10px}
-.month-nav button{background:var(--bg);border:none;border-radius:8px;width:30px;height:30px;font-size:16px;cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center}
-.month-label{font-size:15px;font-weight:600;color:var(--text)}
+.user-email{font-size:11px;color:var(--text2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.logout-btn{font-size:12px;color:var(--text2);background:none;border:0.5px solid var(--border);border-radius:6px;padding:4px 8px;cursor:pointer;white-space:nowrap}
+.month-nav{display:flex;align-items:center;gap:10px;padding-bottom:8px}
+.month-nav button{background:var(--bg);border:none;border-radius:8px;width:28px;height:28px;font-size:16px;cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.month-label{font-size:14px;font-weight:600;color:var(--text)}
 
 /* SUMMARY */
-.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 16px;background:var(--surface)}
-.metric{background:var(--bg);border-radius:10px;padding:10px 8px;text-align:center}
-.metric .lbl{font-size:11px;color:var(--text2);margin-bottom:4px}
-.metric .val{font-size:16px;font-weight:700;letter-spacing:-0.5px}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px 16px;background:var(--surface);flex-shrink:0}
+.metric{background:var(--bg);border-radius:10px;padding:8px 6px;text-align:center}
+.metric .lbl{font-size:10px;color:var(--text2);margin-bottom:3px}
+.metric .val{font-size:14px;font-weight:700;letter-spacing:-0.5px}
 .val.inc{color:#185FA5} .val.exp{color:#A32D2D} .val.pos{color:var(--accent)} .val.neg{color:#A32D2D}
 
 /* SYNC INDICATOR */
-.sync-bar{height:2px;background:var(--surface);overflow:hidden}
+.sync-bar{height:2px;background:var(--surface);overflow:hidden;flex-shrink:0}
 .sync-bar .sync-line{height:100%;width:0;background:var(--accent);transition:width 0.3s}
 .sync-bar.syncing .sync-line{width:100%;transition:width 1.5s}
 
 /* BODY */
-.body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg)}
-.panel{display:none;padding:12px 16px;padding-bottom:calc(80px + var(--safe-bottom))}
+.body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);min-height:0}
+.panel{display:none;padding:12px 16px;padding-bottom:calc(90px + var(--safe-bottom))}
 .panel.active{display:block}
 
 /* FORM */
@@ -123,9 +122,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .key-note{font-size:12px;color:var(--text2);line-height:1.6;margin-top:10px}
 
 /* BOTTOM BAR */
-.bottom-bar{background:var(--surface);border-top:0.5px solid var(--border);display:flex;padding-bottom:var(--safe-bottom)}
-.bot-tab{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px 6px;background:none;border:none;cursor:pointer;gap:3px;color:var(--text2)}
-.bot-tab .icon{font-size:22px;line-height:1}
+.bottom-bar{background:var(--surface);border-top:0.5px solid var(--border);display:flex;flex-shrink:0;padding-bottom:max(var(--safe-bottom), 8px)}
+.bot-tab{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px 4px;background:none;border:none;cursor:pointer;gap:2px;color:var(--text2)}
+.bot-tab .icon{font-size:20px;line-height:1}
 .bot-tab .label{font-size:10px;font-weight:500}
 .bot-tab.active{color:var(--accent)}
 #barWrap{position:relative;height:160px;width:100%}
@@ -143,7 +142,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">로그인</button>
       <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">회원가입</button>
     </div>
-    <input class="auth-input" type="email" id="authEmail" placeholder="이메일" autocomplete="email" />
+    <input class="auth-input" type="email" id="authEmail" placeholder="이메일" autocomplete="email" inputmode="email" />
     <input class="auth-input" type="password" id="authPw" placeholder="비밀번호 (6자 이상)" autocomplete="current-password" />
     <div class="auth-err" id="authErr"></div>
     <button class="auth-btn" id="authBtn" onclick="doAuth()">로그인</button>
@@ -223,7 +222,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, collection, addDoc, deleteDoc, doc, query, where, orderBy, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, addDoc, deleteDoc, doc, orderBy, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDwzfk7-3P4Afi4d3i965PZNERrFUJrEsM",
@@ -249,7 +248,6 @@ let txs = [];
 let barInst = null;
 let unsubscribe = null;
 let currentUser = null;
-let authMode = 'login';
 
 function fmt(n){ return '₩'+Math.abs(n).toLocaleString('ko-KR'); }
 function getMonthTx(){ return txs.filter(t=>{ const d=new Date(t.date); return d.getFullYear()===curYear&&d.getMonth()===curMonth; }).sort((a,b)=>new Date(b.date)-new Date(a.date)); }
@@ -260,6 +258,8 @@ function setSyncing(v){
 }
 
 // AUTH
+let authMode = 'login';
+
 window.switchAuthTab = function(mode){
   authMode = mode;
   document.getElementById('tabLogin').classList.toggle('active', mode==='login');
@@ -278,9 +278,9 @@ window.doAuth = async function(){
   try {
     if(authMode==='login') await signInWithEmailAndPassword(auth,email,pw);
     else await createUserWithEmailAndPassword(auth,email,pw);
-  } catch(e) {
-    const msgs = {'auth/user-not-found':'등록되지 않은 이메일이에요','auth/wrong-password':'비밀번호가 틀렸어요','auth/email-already-in-use':'이미 사용 중인 이메일이에요','auth/weak-password':'비밀번호는 6자 이상이어야 해요','auth/invalid-email':'이메일 형식이 올바르지 않아요','auth/invalid-credential':'이메일 또는 비밀번호가 틀렸어요'};
-    err.textContent = msgs[e.code]||'오류가 발생했어요: '+e.message;
+  } catch(e){
+    const msgs={'auth/user-not-found':'등록되지 않은 이메일이에요','auth/wrong-password':'비밀번호가 틀렸어요','auth/email-already-in-use':'이미 사용 중인 이메일이에요','auth/weak-password':'비밀번호는 6자 이상이어야 해요','auth/invalid-email':'이메일 형식이 올바르지 않아요','auth/invalid-credential':'이메일 또는 비밀번호가 틀렸어요'};
+    err.textContent=msgs[e.code]||'오류: '+e.message;
   }
   btn.disabled=false; btn.textContent=authMode==='login'?'로그인':'회원가입';
 };
@@ -472,7 +472,6 @@ function init(){
   refresh();
 }
 
-// Enter key on auth inputs
 document.getElementById('authPw').addEventListener('keydown', e=>{ if(e.key==='Enter') doAuth(); });
 </script>
 
