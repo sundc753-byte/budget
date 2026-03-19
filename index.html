@@ -169,7 +169,7 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
 <div id="appScreen">
   <div class="topnav">
     <div class="topnav-row">
-      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="alert('버전 v1.3.0\n마지막 업데이트: 2025.03')">v1.3.0</span></span>
+      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.3.1</span></span>
       <div class="user-info">
         <span class="user-email" id="userEmail"></span>
         <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -473,6 +473,27 @@ function init(){
   refresh();
 }
 document.getElementById('authPw').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();});
+
+window.showVersionInfo=function(){
+  if(confirm('가계부 v1.3.1\n마지막 업데이트: 2026.03\n\n캐시·쿠키를 초기화하시겠어요?\n(로그아웃 후 새로고침됩니다)')) clearCache();
+};
+
+window.clearCache=async function(){
+  try{
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      for(const r of regs) await r.unregister();
+    }
+    if('caches' in window){
+      const keys=await caches.keys();
+      for(const k of keys) await caches.delete(k);
+    }
+    alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');
+    window.location.reload(true);
+  }catch(e){
+    alert('오류: '+e.message);
+  }
+};
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
