@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="가계부" />
+<meta name="theme-color" content="#1D9E75" />
+<title>가계부</title>
+<link rel="manifest" href="manifest.json" />
+
+<!-- PWA icons (inline SVG as data URI for standalone mode) -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231D9E75'/%3E%3Ctext x='90' y='120' font-size='90' text-anchor='middle' font-family='system-ui'%3E💰%3C/text%3E%3C/svg%3E" />
+
+<style>
+  :root {
+    --accent: #1D9E75;
+    --accent-light: #E1F5EE;
+    --accent-dark: #085041;
+    --income-col: #185FA5;
+    --expense-col: #A32D2D;
+    --bg: #f8f9fa;
+    --surface: #ffffff;
+    --text: #1a1a1a;
+    --text2: #666;
+    --border: rgba(0,0,0,0.09);
+    --radius: 14px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1c1c1e;
+      --text: #f0f0f0;
+      --text2: #999;
+      --border: rgba(255,255,255,0.1);
+      --accent-light: #0F3028;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, 'Helvetica Neue', sans-serif; overflow: hidden; }
+
+  #shell { display: flex; flex-direction: column; height: 100%; max-width: 430px; margin: 0 auto; }
+
+  /* STATUS BAR SPACER */
+  .status-space { height: var(--safe-top); background: var(--surface); }
+
+  /* TOP NAV */
+  .topnav {
+    background: var(--surface);
+    border-bottom: 0.5px solid var(--border);
+    padding: 12px 16px 10px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .topnav-row { display: flex; align-items: center; justify-content: space-between; }
+  .app-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--accent); }
+  .month-nav { display: flex; align-items: center; gap: 10px; }
+  .month-nav button { background: var(--bg); border: none; border-radius: 8px; width: 30px; height: 30px; font-size: 16px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; }
+  .month-label { font-size: 15px; font-weight: 600; color: var(--text); }
+
+  /* SUMMARY */
+  .summary {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; padding: 12px 16px;
+    background: var(--surface);
+  }
+  .metric { background: var(--bg); border-radius: 10px; padding: 10px 8px; text-align: center; }
+  .metric .lbl { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+  .metric .val { font-size: 16px; font-weight: 700; letter-spacing: -0.5px; }
+  .val.inc { color: #185FA5; }
+  .val.exp { color: #A32D2D; }
+  .val.pos { color: var(--accent); }
+  .val.neg { color: #A32D2D; }
+
+  /* TABS */
+  .tabs {
+    display: flex; background: var(--surface);
+    border-bottom: 0.5px solid var(--border);
+    padding: 0 12px;
+  }
+  .tab {
+    flex: 1; padding: 10px 4px; font-size: 14px; font-weight: 500;
+    color: var(--text2); background: none; border: none; cursor: pointer;
+    border-bottom: 2px solid transparent; transition: all 0.15s;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* SCROLL BODY */
+  .body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--bg); }
+  .panel { display: none; padding: 12px 16px; padding-bottom: calc(80px + var(--safe-bottom)); }
+  .panel.active { display: block; }
+
+  /* ADD FORM */
+  .add-form {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 14px; margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .type-toggle { display: flex; gap: 6px; margin-bottom: 12px; }
+  .type-btn {
+    flex: 1; padding: 9px; border-radius: 10px; border: 1.5px solid var(--border);
+    font-size: 14px; font-weight: 600; cursor: pointer; background: none; color: var(--text2);
+    transition: all 0.15s;
+  }
+  .type-btn.active.exp-btn { background: #FCEBEB; border-color: #E24B4A; color: #A32D2D; }
+  .type-btn.active.inc-btn { background: #E6F1FB; border-color: #378ADD; color: #185FA5; }
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 11px; color: var(--text2); font-weight: 500; }
+  .field input, .field select {
+    padding: 9px 10px; border: 1px solid var(--border); border-radius: 10px;
+    font-size: 15px; color: var(--text); background: var(--bg);
+    -webkit-appearance: none; appearance: none;
+  }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--accent); }
+  .field.full { grid-column: 1 / -1; }
+  .add-btn {
+    width: 100%; padding: 12px; background: var(--accent); border: none;
+    border-radius: 10px; color: white; font-size: 16px; font-weight: 700;
+    cursor: pointer; margin-top: 4px; letter-spacing: -0.3px;
+  }
+  .add-btn:active { opacity: 0.85; transform: scale(0.98); }
+
+  /* TX LIST */
+  .tx-item {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface); border-radius: 12px;
+    padding: 12px; margin-bottom: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .tx-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .tx-info { flex: 1; min-width: 0; }
+  .tx-title { font-size: 15px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tx-meta { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .tx-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+  .tx-amount { font-size: 16px; font-weight: 700; letter-spacing: -0.5px; }
+  .tx-amount.inc { color: #185FA5; }
+  .tx-amount.exp { color: #A32D2D; }
+  .tx-del {
+    background: none; border: none; color: var(--text2); font-size: 18px;
+    cursor: pointer; padding: 2px; border-radius: 6px; line-height: 1;
+  }
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--text2); font-size: 14px; line-height: 1.8; }
+
+  /* CHART */
+  .card { background: var(--surface); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+  .cat-item { margin-bottom: 12px; }
+  .cat-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text); margin-bottom: 4px; }
+  .cat-row .cat-name { color: var(--text); font-weight: 500; }
+  .cat-row .cat-val { color: var(--text2); }
+  .cat-track { height: 7px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+  .cat-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+
+  /* AI PANEL */
+  .ai-badge { font-size: 11px; background: var(--accent-light); color: var(--accent-dark); padding: 3px 8px; border-radius: 20px; font-weight: 600; }
+  .ai-title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .ai-result { font-size: 15px; color: var(--text); line-height: 1.75; white-space: pre-wrap; }
+  .ai-result.dim { color: var(--text2); }
+  .ai-btn {
+    display: flex; align-items: center; gap: 6px; padding: 10px 16px;
+    background: none; border: 1px solid var(--border); border-radius: 10px;
+    font-size: 14px; cursor: pointer; color: var(--text); margin-top: 12px;
+  }
+  .ai-btn:active { opacity: 0.7; }
+  .ai-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .key-input { display: flex; gap: 8px; margin-top: 8px; }
+  .key-input input {
+    flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 10px;
+    font-size: 13px; color: var(--text); background: var(--bg); font-family: monospace;
+  }
+  .key-input input:focus { outline: none; border-color: var(--accent); }
+  .key-input button {
+    padding: 10px 14px; background: var(--accent); border: none; border-radius: 10px;
+    color: white; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .key-note { font-size: 12px; color: var(--text2); line-height: 1.6; margin-top: 10px; }
+
+  /* BOTTOM TAB BAR */
+  .bottom-bar {
+    background: var(--surface);
+    border-top: 0.5px solid var(--border);
+    display: flex;
+    padding-bottom: var(--safe-bottom);
+  }
+  .bot-tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    padding: 8px 4px 6px; background: none; border: none; cursor: pointer;
+    gap: 3px; color: var(--text2);
+  }
+  .bot-tab .icon { font-size: 22px; line-height: 1; }
+  .bot-tab .label { font-size: 10px; font-weight: 500; }
+  .bot-tab.active { color: var(--accent); }
+
+  /* BAR CHART */
+  #barWrap { position: relative; height: 160px; width: 100%; }
+
+  /* INSTALL BANNER */
+  .install-banner {
+    display: none; align-items: center; gap: 10px;
+    background: var(--accent-light); border-radius: 10px;
+    padding: 10px 12px; margin-bottom: 10px; font-size: 13px; color: var(--accent-dark);
+  }
+  .install-banner.show { display: flex; }
+  .install-banner button { margin-left: auto; background: var(--accent); border: none; border-radius: 8px; color: white; padding: 6px 12px; font-size: 12px; cursor: pointer; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div id="shell">
+  <div class="status-space"></div>
+
+  <div class="topnav">
+    <div class="topnav-row">
+      <span class="app-title">💰 가계부</span>
+      <div class="month-nav">
+        <button onclick="changeMonth(-1)">‹</button>
+        <span class="month-label" id="monthLabel"></span>
+        <button onclick="changeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="summary">
+      <div class="metric"><div class="lbl">수입</div><div class="val inc" id="totInc">₩0</div></div>
+      <div class="metric"><div class="lbl">지출</div><div class="val exp" id="totExp">₩0</div></div>
+      <div class="metric"><div class="lbl">잔액</div><div class="val" id="totBal">₩0</div></div>
+    </div>
+  </div>
+
+  <div class="body">
+    <!-- RECORD PANEL -->
+    <div id="p-record" class="panel active">
+      <div id="installBanner" class="install-banner">
+        <span>📲</span>
+        <span>홈 화면에 추가하면 앱처럼 사용할 수 있어요</span>
+        <button onclick="doInstall()">추가</button>
+      </div>
+
+      <div class="add-form">
+        <div class="type-toggle">
+          <button class="type-btn exp-btn active" id="btnExp" onclick="setType('expense')">지출</button>
+          <button class="type-btn inc-btn" id="btnInc" onclick="setType('income')">수입</button>
+        </div>
+        <div class="fields">
+          <div class="field">
+            <label>금액 (원)</label>
+            <input type="number" id="txAmt" placeholder="0" inputmode="numeric" />
+          </div>
+          <div class="field">
+            <label>날짜</label>
+            <input type="date" id="txDate" />
+          </div>
+          <div class="field">
+            <label>카테고리</label>
+            <select id="txCat">
+              <option>식비</option><option>교통</option><option>쇼핑</option>
+              <option>문화·여가</option><option>의료·건강</option><option>통신</option>
+              <option>주거</option><option>교육</option><option>기타</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>메모</label>
+            <input type="text" id="txNote" placeholder="선택 사항" />
+          </div>
+        </div>
+        <button class="add-btn" onclick="addTx()">추가하기</button>
+      </div>
+
+      <div id="txList"></div>
+    </div>
+
+    <!-- CHART PANEL -->
+    <div id="p-chart" class="panel">
+      <div class="card">
+        <div class="card-title">카테고리별 지출</div>
+        <div id="catBars"><div class="empty">지출 데이터가 없어요</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">수입 vs 지출</div>
+        <div id="barWrap"><canvas id="barChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- AI PANEL -->
+    <div id="p-ai" class="panel">
+      <div class="card">
+        <div class="ai-title-row">
+          <span style="font-size:16px;font-weight:700">AI 소비 분석</span>
+          <span class="ai-badge">Claude AI</span>
+        </div>
+        <div class="ai-result dim" id="aiResult">이번 달 지출을 AI가 분석해드려요. 아래 버튼을 눌러 시작하세요.</div>
+        <button class="ai-btn" id="aiBtn" onclick="runAI()">✦ 분석 시작</button>
+      </div>
+      <div class="card">
+        <div style="font-size:15px;font-weight:700;margin-bottom:10px">API 키 설정</div>
+        <div class="key-input">
+          <input type="password" id="keyInput" placeholder="sk-ant-..." />
+          <button onclick="saveKey()">저장</button>
+        </div>
+        <div class="key-note" id="keyStatus">
+          Anthropic API 키를 입력하면 AI 분석을 사용할 수 있어요.<br>
+          키는 이 기기에만 저장되며 외부로 전송되지 않아요.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM TAB BAR -->
+  <div class="bottom-bar">
+    <button class="bot-tab active" id="bt-record" onclick="switchTab('record', this)">
+      <span class="icon">📝</span><span class="label">기록</span>
+    </button>
+    <button class="bot-tab" id="bt-chart" onclick="switchTab('chart', this)">
+      <span class="icon">📊</span><span class="label">분석</span>
+    </button>
+    <button class="bot-tab" id="bt-ai" onclick="switchTab('ai', this)">
+      <span class="icon">✦</span><span class="label">AI 분석</span>
+    </button>
+  </div>
+</div>
+
+<!-- Service Worker registration -->
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+
+<!-- PWA install prompt -->
+<script>
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').classList.add('show');
+});
+function doInstall() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(() => {
+    deferredPrompt = null;
+    document.getElementById('installBanner').classList.remove('show');
+  });
+}
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ---- STATE ----
+let txType = 'expense';
+let curYear = new Date().getFullYear();
+let curMonth = new Date().getMonth();
+let txs = JSON.parse(localStorage.getItem('gaebub_txs') || '[]');
+let barInst = null;
+
+const ICONS = { '식비':'🍽','교통':'🚇','쇼핑':'🛍','문화·여가':'🎬','의료·건강':'💊','통신':'📱','주거':'🏠','교육':'📚','급여':'💰','용돈':'💵','기타수입':'💹','기타':'📌' };
+const COLORS = { '식비':'#1D9E75','교통':'#185FA5','쇼핑':'#D4537E','문화·여가':'#7F77DD','의료·건강':'#D85A30','통신':'#BA7517','주거':'#3B6D11','교육':'#639922','기타':'#888780' };
+
+function save() { localStorage.setItem('gaebub_txs', JSON.stringify(txs)); }
+function fmt(n) { return '₩' + Math.abs(n).toLocaleString('ko-KR'); }
+function getMonth() {
+  return txs.filter(t => { const d = new Date(t.date); return d.getFullYear()===curYear && d.getMonth()===curMonth; })
+    .sort((a,b) => new Date(b.date)-new Date(a.date));
+}
+const MONTHS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+function updateSummary() {
+  const m = getMonth();
+  const inc = m.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const exp = m.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const bal = inc - exp;
+  document.getElementById('totInc').textContent = fmt(inc);
+  document.getElementById('totExp').textContent = fmt(exp);
+  const b = document.getElementById('totBal');
+  b.textContent = (bal<0?'-':'')+fmt(bal);
+  b.className = 'val '+(bal>=0?'pos':'neg');
+  document.getElementById('monthLabel').textContent = `${curYear}년 ${MONTHS[curMonth]}`;
+}
+
+function renderList() {
+  const m = getMonth();
+  const el = document.getElementById('txList');
+  if (!m.length) { el.innerHTML = '<div class="empty">이번 달 기록이 없어요 🌱<br>첫 번째 항목을 추가해보세요</div>'; return; }
+  el.innerHTML = m.map(t => `
+    <div class="tx-item">
+      <div class="tx-icon" style="background:${t.type==='income'?'#E6F1FB':'#FCEBEB'}">${ICONS[t.category]||'📌'}</div>
+      <div class="tx-info">
+        <div class="tx-title">${t.note||t.category}</div>
+        <div class="tx-meta">${t.category} · ${t.date}</div>
+      </div>
+      <div class="tx-right">
+        <div class="tx-amount ${t.type==='income'?'inc':'exp'}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>
+        <button class="tx-del" onclick="delTx('${t.id}')">×</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderChart() {
+  const m = getMonth();
+  const exp = m.filter(t=>t.type==='expense');
+  const cats = {};
+  exp.forEach(t=>{ cats[t.category]=(cats[t.category]||0)+t.amount; });
+  const sorted = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  const maxV = sorted.length ? sorted[0][1] : 1;
+  const catEl = document.getElementById('catBars');
+  catEl.innerHTML = sorted.length ? sorted.map(([c,v])=>`
+    <div class="cat-item">
+      <div class="cat-row"><span class="cat-name">${ICONS[c]||''} ${c}</span><span class="cat-val">${fmt(v)}</span></div>
+      <div class="cat-track"><div class="cat-fill" style="width:${Math.round(v/maxV*100)}%;background:${COLORS[c]||'#1D9E75'}"></div></div>
+    </div>`).join('') : '<div class="empty">지출 데이터가 없어요</div>';
+
+  const inc = m.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const expTotal = m.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  if (barInst) barInst.destroy();
+  barInst = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: ['수입','지출'],
+      datasets: [{ data:[inc,expTotal], backgroundColor:['#378ADD','#E24B4A'], borderRadius:8, borderSkipped:false }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false } },
+      scales: {
+        x:{ grid:{display:false}, ticks:{color:'#888',font:{size:13}} },
+        y:{ grid:{color:'rgba(128,128,128,0.1)'}, ticks:{color:'#888',font:{size:11},callback:v=>'₩'+(v/10000).toFixed(0)+'만'} }
+      }
+    }
+  });
+}
+
+function setType(type) {
+  txType = type;
+  document.getElementById('btnExp').className = 'type-btn exp-btn'+(type==='expense'?' active':'');
+  document.getElementById('btnInc').className = 'type-btn inc-btn'+(type==='income'?' active':'');
+  const c = document.getElementById('txCat');
+  c.innerHTML = type==='income'
+    ? '<option>급여</option><option>용돈</option><option>기타수입</option>'
+    : '<option>식비</option><option>교통</option><option>쇼핑</option><option>문화·여가</option><option>의료·건강</option><option>통신</option><option>주거</option><option>교육</option><option>기타</option>';
+}
+
+function addTx() {
+  const amt = parseInt(document.getElementById('txAmt').value);
+  const date = document.getElementById('txDate').value;
+  if (!amt || amt<=0 || !date) { alert('금액과 날짜를 입력해주세요'); return; }
+  txs.push({ id: Date.now().toString(), type: txType, amount: amt, date, category: document.getElementById('txCat').value, note: document.getElementById('txNote').value.trim() });
+  save();
+  document.getElementById('txAmt').value='';
+  document.getElementById('txNote').value='';
+  refresh();
+}
+
+function delTx(id) {
+  if (!confirm('삭제하시겠어요?')) return;
+  txs = txs.filter(t=>t.id!==id);
+  save(); refresh();
+}
+
+function changeMonth(d) {
+  curMonth += d;
+  if (curMonth<0){curMonth=11;curYear--;} if(curMonth>11){curMonth=0;curYear++;}
+  refresh();
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.bot-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p-'+name).classList.add('active');
+  btn.classList.add('active');
+  if (name==='chart') renderChart();
+}
+
+function refresh() { updateSummary(); renderList(); }
+
+async function runAI() {
+  const key = localStorage.getItem('gaebub_key');
+  if (!key) { document.getElementById('aiResult').textContent='API 키를 먼저 입력해주세요.'; return; }
+  const m = getMonth();
+  if (!m.length) { document.getElementById('aiResult').textContent='이번 달 기록이 없어요.'; return; }
+  const inc = m.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const exp = m.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const cats = {};
+  m.filter(t=>t.type==='expense').forEach(t=>{cats[t.category]=(cats[t.category]||0)+t.amount;});
+  const catStr = Object.entries(cats).map(([k,v])=>`${k}: ${v.toLocaleString()}원`).join(', ');
+  const btn = document.getElementById('aiBtn');
+  const res = document.getElementById('aiResult');
+  btn.disabled=true; btn.textContent='분석 중...'; res.className='ai-result dim'; res.textContent='AI가 분석하고 있어요...';
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:500, messages:[{role:'user',content:`이번 달 가계부: 수입 ${inc.toLocaleString()}원, 지출 ${exp.toLocaleString()}원. 카테고리별: ${catStr}. 친절하고 실용적인 한국어로 소비 패턴 분석과 절약 팁을 3~4문장으로 알려주세요.`}] })
+    });
+    const data = await r.json();
+    res.className='ai-result'; res.textContent = data.content?.[0]?.text || 'API 오류: '+(data.error?.message||JSON.stringify(data));
+  } catch(e) { res.className='ai-result'; res.textContent='오류: '+e.message; }
+  btn.disabled=false; btn.innerHTML='✦ 다시 분석';
+}
+
+function saveKey() {
+  const k = document.getElementById('keyInput').value.trim();
+  if (!k) return;
+  localStorage.setItem('gaebub_key',k);
+  document.getElementById('keyInput').value='';
+  document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';
+}
+
+// INIT
+document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
+if (localStorage.getItem('gaebub_key')) document.getElementById('keyStatus').textContent='✅ API 키가 설정되어 있어요.';
+refresh();
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "가계부",
+  "short_name": "가계부",
+  "description": "AI 소비 분석 가계부",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1D9E75",
+  "theme_color": "#1D9E75",
+  "orientation": "portrait",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='115' fill='%231D9E75'/><text y='380' font-size='320' text-anchor='middle' x='256'>💰</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
