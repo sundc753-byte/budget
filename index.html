@@ -75,7 +75,7 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
 
 /* scrollable body */
 .body{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--bg)}
-.panel{display:none;padding:12px 16px 120px}
+.panel{display:none;padding:12px 16px 140px}
 .panel.active{display:block}
 
 /* form - single column */
@@ -133,18 +133,75 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
 .key-row button{padding:10px 14px;background:var(--a);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;flex-shrink:0}
 .key-note{font-size:12px;color:var(--t2);line-height:1.6;margin-top:10px}
 
-/* bottom bar - fixed */
+/* bottom bar - liquid glass */
 .bottom-bar{
   position:fixed;bottom:0;left:0;right:0;
-  background:var(--sf);border-top:0.5px solid var(--bd);
-  display:flex;
-  padding-bottom:var(--sb);
+  display:flex;justify-content:center;
+  padding-bottom:calc(var(--sb) + 12px);
+  padding-top:10px;
   z-index:100;
+  background:transparent;
+  pointer-events:none;
 }
-.bot-tab{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 6px;background:none;border:none;cursor:pointer;gap:3px;color:var(--t2)}
-.bot-tab .icon{font-size:20px;line-height:1}
-.bot-tab .label{font-size:10px;font-weight:500}
-.bot-tab.active{color:var(--a)}
+.tab-pill{
+  display:flex;align-items:center;gap:2px;
+  background:rgba(255,255,255,0.25);
+  backdrop-filter:blur(40px) saturate(200%) brightness(1.1);
+  -webkit-backdrop-filter:blur(40px) saturate(200%) brightness(1.1);
+  border:0.5px solid rgba(255,255,255,0.6);
+  border-radius:99px;
+  padding:5px;
+  pointer-events:all;
+  box-shadow:
+    0 12px 40px rgba(0,0,0,0.15),
+    0 4px 12px rgba(0,0,0,0.08),
+    inset 0 1.5px 0 rgba(255,255,255,0.8),
+    inset 0 -1px 0 rgba(0,0,0,0.05);
+}
+@media(prefers-color-scheme:dark){
+  .tab-pill{
+    background:rgba(28,28,32,0.6);
+    border-color:rgba(255,255,255,0.14);
+    box-shadow:
+      0 12px 40px rgba(0,0,0,0.5),
+      0 4px 12px rgba(0,0,0,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.1),
+      inset 0 -1px 0 rgba(0,0,0,0.2);
+  }
+}
+.bot-tab{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:9px 22px;gap:3px;
+  background:none;border:none;cursor:pointer;
+  color:rgba(100,100,110,0.9);border-radius:94px;
+  transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  min-width:76px;
+  -webkit-user-select:none;user-select:none;
+}
+.bot-tab .icon{font-size:20px;line-height:1;transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1)}
+.bot-tab .label{font-size:10px;font-weight:600;letter-spacing:0.2px;transition:all 0.2s}
+.bot-tab.active{
+  background:rgba(255,255,255,0.82);
+  color:var(--a);
+  box-shadow:
+    0 3px 16px rgba(0,0,0,0.12),
+    0 1px 4px rgba(0,0,0,0.06),
+    inset 0 1.5px 0 rgba(255,255,255,1),
+    inset 0 -0.5px 0 rgba(0,0,0,0.04);
+}
+.bot-tab.active .icon{transform:scale(1.18)}
+.bot-tab:active{transform:scale(0.94)}
+@media(prefers-color-scheme:dark){
+  .bot-tab{color:rgba(180,180,190,0.7)}
+  .bot-tab.active{
+    background:rgba(255,255,255,0.14);
+    color:var(--a);
+    box-shadow:
+      0 3px 16px rgba(0,0,0,0.35),
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      inset 0 -0.5px 0 rgba(0,0,0,0.15);
+  }
+}
 #barWrap{position:relative;height:160px;width:100%}
 </style>
 </head>
@@ -169,7 +226,7 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
 <div id="appScreen">
   <div class="topnav">
     <div class="topnav-row">
-      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.3.2</span></span>
+      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.3.3</span></span>
       <div class="user-info">
         <span class="user-email" id="userEmail"></span>
         <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -244,9 +301,11 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
   </div>
 
   <div class="bottom-bar">
-    <button class="bot-tab active" id="bt-record" onclick="switchTab('record',this)"><span class="icon">📝</span><span class="label">기록</span></button>
-    <button class="bot-tab" id="bt-chart" onclick="switchTab('chart',this)"><span class="icon">📊</span><span class="label">분석</span></button>
-    <button class="bot-tab" id="bt-ai" onclick="switchTab('ai',this)"><span class="icon">✦</span><span class="label">AI 분석</span></button>
+    <div class="tab-pill">
+      <button class="bot-tab active" id="bt-record" onclick="switchTab('record',this)"><span class="icon">📝</span><span class="label">기록</span></button>
+      <button class="bot-tab" id="bt-chart" onclick="switchTab('chart',this)"><span class="icon">📊</span><span class="label">분석</span></button>
+      <button class="bot-tab" id="bt-ai" onclick="switchTab('ai',this)"><span class="icon">✦</span><span class="label">AI 분석</span></button>
+    </div>
   </div>
 </div>
 
@@ -475,7 +534,7 @@ function init(){
 document.getElementById('authPw').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();});
 
 window.showVersionInfo=function(){
-  if(confirm('가계부 v1.3.2\n빌드: 2026.03.19 13:11:01\n\n캐시·쿠키를 초기화하시겠어요?\n(로그아웃 후 새로고침됩니다)')) clearCache();
+  if(confirm('가계부 v1.3.3\n빌드: 2026.03.19 13:30:11\n\n캐시·쿠키를 초기화하시겠어요?\n(로그아웃 후 새로고침됩니다)')) clearCache();
 };
 
 window.clearCache=async function(){
