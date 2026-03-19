@@ -67,7 +67,7 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
 .metric{background:var(--bg);border-radius:10px;padding:8px 4px;text-align:center}
 .metric .lbl{font-size:10px;color:var(--t2);margin-bottom:3px}
 .metric .val{font-size:13px;font-weight:700;letter-spacing:-0.3px}
-.val.inc{color:#185FA5}.val.exp{color:#A32D2D}.val.pos{color:var(--a)}.val.neg{color:#A32D2D}
+.val.inc{color:#A32D2D}.val.exp{color:#185FA5}.val.pos{color:var(--a)}.val.neg{color:#185FA5}
 
 .sync-bar{height:2px;background:var(--sf);overflow:hidden;flex-shrink:0}
 .sync-line{height:100%;width:0;background:var(--a);transition:width 0.3s}
@@ -106,7 +106,7 @@ body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,
 .tx-meta{font-size:11px;color:var(--t2);margin-top:2px}
 .tx-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
 .tx-amount{font-size:14px;font-weight:700;white-space:nowrap}
-.tx-amount.inc{color:#185FA5}.tx-amount.exp{color:#A32D2D}
+.tx-amount.inc{color:#A32D2D}.tx-amount.exp{color:#185FA5}
 .tx-who{font-size:10px;color:var(--t2);background:var(--bg);padding:1px 5px;border-radius:8px}
 .tx-del{background:none;border:none;color:var(--t2);font-size:16px;cursor:pointer;padding:2px;line-height:1}
 .empty{text-align:center;padding:3rem 1rem;color:var(--t2);font-size:14px;line-height:1.8}
@@ -414,7 +414,7 @@ window.renderChart=function(){
   if(barInst)barInst.destroy();
   if(window.Chart)barInst=new Chart(document.getElementById('barChart'),{
     type:'bar',
-    data:{labels:['수입','지출'],datasets:[{data:[inc,expT],backgroundColor:['#378ADD','#E24B4A'],borderRadius:8,borderSkipped:false}]},
+    data:{labels:['수입','지출'],datasets:[{data:[inc,expT],backgroundColor:['#E24B4A','#378ADD'],borderRadius:8,borderSkipped:false}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#888',font:{size:13}}},y:{grid:{color:'rgba(128,128,128,0.1)'},ticks:{color:'#888',font:{size:11},callback:v=>'₩'+(v/10000).toFixed(0)+'만'}}}}
   });
 };
