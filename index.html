@@ -1,9 +1,9 @@
-<!-- 가계부 v1.5.3 | 빌드: 2026.03.20 12:42:12 (KST) -->
+<!-- 가계부 v1.5.4 | 빌드: 2026.03.20 12:47:50 (KST) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="가계부"/>
@@ -72,6 +72,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 .tx-amount.inc{color:#A32D2D}.tx-amount.exp{color:#185FA5}
 .tx-who{font-size:10px;color:var(--t2);background:var(--bg);padding:1px 5px;border-radius:8px}
 .tx-del{background:none;border:none;color:var(--t2);font-size:16px;cursor:pointer;padding:2px;line-height:1}
+.tx-edit{background:none;border:none;color:var(--a);font-size:16px;cursor:pointer;padding:2px;line-height:1}
 .empty{text-align:center;padding:3rem 1rem;color:var(--t2);font-size:14px;line-height:1.8}
 .card{background:var(--sf);border-radius:var(--r);padding:14px;margin-bottom:12px}
 .card-title{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:12px}
@@ -123,6 +124,16 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 .bot-tab.active{background:rgba(255,255,255,0.82);color:var(--a);box-shadow:0 3px 16px rgba(0,0,0,0.12),inset 0 1.5px 0 rgba(255,255,255,1)}
 .bot-tab.active svg{transform:scale(1.15)}.bot-tab:active{transform:scale(0.94)}
 @media(prefers-color-scheme:dark){.bot-tab{color:rgba(160,160,170,0.7)}.bot-tab.active{background:rgba(255,255,255,0.14);color:var(--a)}}
+
+/* 수정 모달 */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-sheet{background:var(--sf);border-radius:20px 20px 0 0;padding:20px 16px;padding-bottom:max(env(safe-area-inset-bottom,0px),24px);width:100%;max-height:85vh;overflow-y:auto}
+.modal-handle{width:40px;height:4px;background:var(--bd);border-radius:2px;margin:0 auto 16px}
+.modal-title{font-size:17px;font-weight:700;color:var(--tx);margin-bottom:16px;text-align:center}
+.modal-btns{display:flex;gap:8px;margin-top:12px}
+.modal-btn-cancel{flex:1;padding:13px;background:var(--bg);border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;color:var(--t2)}
+.modal-btn-save{flex:2;padding:13px;background:var(--a);border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;color:#fff}
 </style>
 </head>
 <body>
@@ -146,7 +157,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 <div id="appScreen">
   <div class="topnav">
     <div class="topnav-row">
-      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.5.3</span></span>
+      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.5.4</span></span>
       <div class="user-info">
         <span class="user-email" id="userEmail"></span>
         <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -287,10 +298,38 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
   </div>
 </div>
 
+<!-- 수정 모달 -->
+<div class="modal-overlay" id="editModal" onclick="closeEditModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">내역 수정</div>
+    <input type="hidden" id="editId"/>
+    <div class="type-toggle" style="margin-bottom:10px">
+      <button class="type-btn exp-btn active" id="editBtnExp" onclick="setEditType('expense')">지출</button>
+      <button class="type-btn inc-btn" id="editBtnInc" onclick="setEditType('income')">수입</button>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>금액 (원)</label><input type="number" id="editAmt" inputmode="numeric"/></div>
+      <div class="field"><label>날짜</label><input type="date" id="editDate"/></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>카테고리</label><select id="editCat"></select></div>
+      <div class="field"><label>결제 수단</label><select id="editPay"><option value="">선택 안 함</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>메모</label><input type="text" id="editNote" placeholder="선택 사항"/></div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn-cancel" onclick="closeEditModal()">취소</button>
+      <button class="modal-btn-save" onclick="saveTxEdit()">저장</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, collection, addDoc, deleteDoc, setDoc, doc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, addDoc, deleteDoc, setDoc, updateDoc, doc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig={apiKey:"AIzaSyDwzfk7-3P4Afi4d3i965PZNERrFUJrEsM",authDomain:"budget-bbec2.firebaseapp.com",projectId:"budget-bbec2",storageBucket:"budget-bbec2.firebasestorage.app",messagingSenderId:"321441819817",appId:"1:321441819817:web:4c51f2efb940ee3e3e8db8"};
 const app=initializeApp(firebaseConfig);
@@ -555,8 +594,68 @@ window.runAI=async function(){
   btn.disabled=false;btn.innerHTML='✦ 다시 분석';
 };
 
+
+let editType = 'expense';
+
+window.openEditModal = function(id) {
+  const t = txs.find(t => t.id === id);
+  if (!t) return;
+  editType = t.type;
+  document.getElementById('editId').value = id;
+  document.getElementById('editAmt').value = t.amount;
+  document.getElementById('editDate').value = t.date;
+  document.getElementById('editNote').value = t.note || '';
+  // type toggle
+  setEditType(t.type);
+  // cat select
+  updateEditCatSelect(t.type, t.category);
+  // pay select
+  const ps = document.getElementById('editPay');
+  ps.innerHTML = '<option value="">선택 안 함</option>' + payments.map(p => '<option value="' + p.name + '">' + p.name + '</option>').join('');
+  ps.value = t.payment || '';
+  document.getElementById('editModal').classList.add('open');
+};
+
+window.setEditType = function(type) {
+  editType = type;
+  document.getElementById('editBtnExp').className = 'type-btn exp-btn' + (type === 'expense' ? ' active' : '');
+  document.getElementById('editBtnInc').className = 'type-btn inc-btn' + (type === 'income' ? ' active' : '');
+  updateEditCatSelect(type, '');
+};
+
+function updateEditCatSelect(type, selected) {
+  const cats = type === 'expense' ? getExpCats() : getIncCats();
+  const sel = document.getElementById('editCat');
+  sel.innerHTML = cats.map(c => '<option value="' + c.name + '">' + c.icon + ' ' + c.name + '</option>').join('');
+  if (selected && cats.find(c => c.name === selected)) sel.value = selected;
+}
+
+window.closeEditModal = function(e) {
+  if (e && e.target !== document.getElementById('editModal')) return;
+  document.getElementById('editModal').classList.remove('open');
+};
+
+window.saveTxEdit = async function() {
+  const id = document.getElementById('editId').value;
+  const amt = parseInt(document.getElementById('editAmt').value);
+  const date = document.getElementById('editDate').value;
+  if (!amt || amt <= 0 || !date) { alert('금액과 날짜를 입력해주세요'); return; }
+  setSyncing(true);
+  try {
+    await updateDoc(doc(db, 'transactions', id), {
+      type: editType,
+      amount: amt,
+      date,
+      category: document.getElementById('editCat').value,
+      payment: document.getElementById('editPay').value || '',
+      note: document.getElementById('editNote').value.trim(),
+    });
+    document.getElementById('editModal').classList.remove('open');
+  } catch(e) { alert('수정 실패: ' + e.message); setSyncing(false); }
+};
+
 window.saveKey=function(){const k=document.getElementById('keyInput').value.trim();if(!k)return;localStorage.setItem('gaebub_key',k);document.getElementById('keyInput').value='';document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';};
-window.showVersionInfo=function(){if(confirm('가계부 v1.5.3\n빌드: 2026.03.20 12:42:12 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
+window.showVersionInfo=function(){if(confirm('가계부 v1.5.4\n빌드: 2026.03.20 12:47:50 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
 window.clearCache=async function(){try{if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistrations();for(const x of r)await x.unregister();}if('caches' in window){const k=await caches.keys();for(const x of k)await caches.delete(x);}alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');window.location.reload(true);}catch(e){alert('오류: '+e.message);}};
 
 function refresh(){updateSummary();renderList();}
@@ -567,4 +666,4 @@ document.getElementById('authPw').addEventListener('keydown',e=>{if(e.key==='Ent
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/budget/sw.js',{scope:'/budget/'}).catch(()=>{});}</script>
 </body>
 </html>
-<!-- 가계부 v1.5.3 | 빌드: 2026.03.20 12:42:12 (KST) -->
+<!-- 가계부 v1.5.4 | 빌드: 2026.03.20 12:47:50 (KST) -->
