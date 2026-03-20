@@ -1,4 +1,4 @@
-<!-- 가계부 v1.7.7 | 빌드: 2026.03.20 23:27:44 (KST) -->
+<!-- 가계부 v1.7.8 | 빌드: 2026.03.20 23:36:40 (KST) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -49,7 +49,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 .sync-line{height:100%;width:0;background:var(--a);transition:width 0.3s}
 .syncing .sync-line{width:100%;transition:width 1.5s}
 .body{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--bg);min-height:0;height:0}
-.panel{display:none;padding:12px 16px calc(var(--fixed-tab-h,120px) + 24px);width:100%}.panel.active{display:block}
+.panel{display:none;padding:12px 16px 200px;width:100%}.panel.active{display:block}
 .add-form{background:var(--sf);border-radius:var(--r);padding:14px;margin-bottom:12px}
 .type-toggle{display:flex;gap:6px;margin-bottom:10px}
 .type-btn{flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--bd);font-size:14px;font-weight:600;cursor:pointer;background:none;color:var(--t2)}
@@ -115,9 +115,9 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 .key-note{font-size:12px;color:var(--t2);line-height:1.6;margin-top:10px}
 .export-btn{width:100%;padding:13px;background:none;border:1.5px solid var(--a);border-radius:10px;color:var(--a);font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px}
 .export-btn:active{opacity:0.7}
-.bottom-bar{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;padding-bottom:var(--fixed-sab,34px);padding-top:10px;padding-left:16px;padding-right:16px;z-index:100;background:transparent;pointer-events:none}
-.bottom-bar::after{content:"";position:absolute;bottom:0;left:0;right:0;height:var(--fixed-sab,34px);background:var(--sf);z-index:-1}
-.tab-pill{display:flex;align-items:center;gap:2px;width:100%;background:rgba(255,255,255,0.25);backdrop-filter:blur(40px) saturate(200%) brightness(1.1);-webkit-backdrop-filter:blur(40px) saturate(200%) brightness(1.1);border:0.5px solid rgba(255,255,255,0.6);border-radius:99px;padding:5px;pointer-events:all;box-shadow:0 12px 40px rgba(0,0,0,0.15),0 4px 12px rgba(0,0,0,0.08),inset 0 1.5px 0 rgba(255,255,255,0.8),inset 0 -1px 0 rgba(0,0,0,0.05)}
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;padding:10px 16px 0;z-index:100;background:transparent;pointer-events:none}
+.bottom-bar::after{content:"";position:fixed;bottom:0;left:0;right:0;height:env(safe-area-inset-bottom,0px);background:var(--sf);z-index:99}
+.tab-pill{display:flex;align-items:center;gap:2px;width:100%;background:rgba(255,255,255,0.25);backdrop-filter:blur(40px) saturate(200%) brightness(1.1);-webkit-backdrop-filter:blur(40px) saturate(200%) brightness(1.1);border:0.5px solid rgba(255,255,255,0.6);border-radius:99px;padding:5px;pointer-events:all;box-shadow:0 12px 40px rgba(0,0,0,0.15),0 4px 12px rgba(0,0,0,0.08),inset 0 1.5px 0 rgba(255,255,255,0.8),inset 0 -1px 0 rgba(0,0,0,0.05);margin-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){.tab-pill{background:rgba(28,28,32,0.6);border-color:rgba(255,255,255,0.14);box-shadow:0 12px 40px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.1)}}
 .bot-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 4px;gap:3px;background:none;border:none;cursor:pointer;color:rgba(120,120,130,0.8);border-radius:94px;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);-webkit-user-select:none;user-select:none}
 .bot-tab svg{width:20px;height:20px;transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -160,7 +160,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 .seg-btn.active{background:var(--sf);color:var(--tx);font-weight:700}
 
 /* 스플래시 */
-#splash{position:fixed;inset:0;background:var(--a);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:999;transition:opacity 0.3s}
+#splash{position:fixed;top:0;left:0;right:0;bottom:0;background:#1D9E75;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999;transition:opacity 0.3s}
 #splash.hide{opacity:0;pointer-events:none}
 #splash .s-logo{font-size:60px}
 #splash .s-title{font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.5px}
@@ -189,7 +189,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 <div id="appScreen">
   <div class="topnav">
     <div class="topnav-row">
-      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.7.7</span></span>
+      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.7.8</span></span>
       <div class="user-info">
         <span class="user-email" id="userEmail"></span>
         <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -947,24 +947,12 @@ function renderTransfers() {
 }
 
 window.saveKey=function(){const k=document.getElementById('keyInput').value.trim();if(!k)return;localStorage.setItem('gaebub_key',k);document.getElementById('keyInput').value='';document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';};
-window.showVersionInfo=function(){if(confirm('가계부 v1.7.7\n빌드: 2026.03.20 23:27:44 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
+window.showVersionInfo=function(){if(confirm('가계부 v1.7.8\n빌드: 2026.03.20 23:36:40 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
 window.clearCache=async function(){try{if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistrations();for(const x of r)await x.unregister();}if('caches' in window){const k=await caches.keys();for(const x of k)await caches.delete(x);}alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');setTimeout(()=>window.location.reload(true),500);}catch(e){alert('오류: '+e.message);}};
 
 function refresh(){updateSummary();renderList();renderAssets();}
 
-// safe area & 탭바 높이 고정 (키보드에 영향 안 받도록)
-function fixLayoutVars(){
-  const sab = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sb')) || 34;
-  const realSab = Math.max(window.screen.height - window.innerHeight > 100 ? 0 : sab, 20);
-  document.documentElement.style.setProperty('--fixed-sab', Math.max(realSab, 20) + 'px');
-  const bar = document.querySelector('.bottom-bar');
-  if(bar){
-    const h = bar.getBoundingClientRect().height;
-    if(h > 0) document.documentElement.style.setProperty('--fixed-tab-h', h + 'px');
-  }
-}
 function init(){
-  setTimeout(fixLayoutVars, 100);
   document.getElementById('txDate').value=new Date().toISOString().split('T')[0];
   document.getElementById('transferDate').value=new Date().toISOString().split('T')[0];if(localStorage.getItem('gaebub_key'))document.getElementById('keyStatus').textContent='✅ API 키가 설정되어 있어요.';refresh();}
 document.getElementById('authPw').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();});
@@ -973,4 +961,4 @@ document.getElementById('authPw').addEventListener('keydown',e=>{if(e.key==='Ent
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/budget/sw.js',{scope:'/budget/'}).catch(()=>{});}</script>
 </body>
 </html>
-<!-- 가계부 v1.7.7 | 빌드: 2026.03.20 23:27:44 (KST) -->
+<!-- 가계부 v1.7.8 | 빌드: 2026.03.20 23:36:40 (KST) -->
