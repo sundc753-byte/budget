@@ -1,4 +1,4 @@
-<!-- 가계부 v1.6.0 | 빌드: 2026.03.20 14:47:58 (KST) -->
+<!-- 가계부 v1.7.0 | 빌드: 2026.03.20 22:19:29 (KST) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -134,6 +134,29 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 .modal-btns{display:flex;gap:8px;margin-top:12px}
 .modal-btn-cancel{flex:1;padding:13px;background:var(--bg);border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;color:var(--t2)}
 .modal-btn-save{flex:2;padding:13px;background:var(--a);border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;color:#fff}
+
+/* 자산 관리 */
+.asset-total{background:var(--a);border-radius:var(--r);padding:16px;margin-bottom:12px;text-align:center}
+.asset-total .lbl{font-size:12px;color:rgba(255,255,255,0.8);margin-bottom:6px}
+.asset-total .val{font-size:26px;font-weight:700;color:#fff;letter-spacing:-1px}
+.asset-item{display:flex;align-items:center;gap:12px;background:var(--sf);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.asset-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.asset-info{flex:1;min-width:0}
+.asset-name{font-size:14px;font-weight:600;color:var(--tx)}
+.asset-bank{font-size:11px;color:var(--t2);margin-top:2px}
+.asset-bal{font-size:15px;font-weight:700;color:var(--tx);white-space:nowrap;flex-shrink:0}
+.asset-bal.neg{color:#A32D2D}
+.asset-del{background:none;border:none;color:var(--t2);font-size:16px;cursor:pointer;padding:2px;line-height:1;flex-shrink:0}
+.transfer-item{display:flex;align-items:center;gap:10px;background:var(--sf);border-radius:12px;padding:10px 12px;margin-bottom:6px}
+.transfer-arrow{font-size:13px;color:var(--t2);flex-shrink:0}
+.transfer-info{flex:1;min-width:0}
+.transfer-name{font-size:13px;font-weight:600;color:var(--tx)}
+.transfer-date{font-size:11px;color:var(--t2);margin-top:1px}
+.transfer-amt{font-size:13px;font-weight:700;color:var(--a);white-space:nowrap}
+.transfer-del{background:none;border:none;color:var(--t2);font-size:15px;cursor:pointer;padding:2px;line-height:1}
+.seg-ctrl{display:flex;background:var(--bg);border-radius:10px;padding:3px;margin-bottom:12px}
+.seg-btn{flex:1;padding:7px;text-align:center;font-size:13px;font-weight:500;border:none;background:none;cursor:pointer;border-radius:8px;color:var(--t2);transition:all 0.15s}
+.seg-btn.active{background:var(--sf);color:var(--tx);font-weight:700}
 </style>
 </head>
 <body>
@@ -157,7 +180,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 <div id="appScreen">
   <div class="topnav">
     <div class="topnav-row">
-      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.6.0</span></span>
+      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.7.0</span></span>
       <div class="user-info">
         <span class="user-email" id="userEmail"></span>
         <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -197,6 +220,53 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
         <button class="add-btn" id="addBtn" onclick="addTx()">추가하기</button>
       </div>
       <div id="txList"></div>
+    </div>
+
+    <!-- 자산 탭 -->
+    <div id="p-asset" class="panel">
+      <div class="asset-total">
+        <div class="lbl">총 자산</div>
+        <div class="val" id="totalAsset">₩0</div>
+      </div>
+      <div class="seg-ctrl">
+        <button class="seg-btn active" id="seg-accounts" onclick="switchAssetSeg('accounts',this)">자산 현황</button>
+        <button class="seg-btn" id="seg-add" onclick="switchAssetSeg('add',this)">자산 추가</button>
+        <button class="seg-btn" id="seg-transfer" onclick="switchAssetSeg('transfer',this)">이체</button>
+      </div>
+      <div id="assetSeg-accounts">
+        <div id="assetList"><div class="empty">등록된 자산이 없어요</div></div>
+      </div>
+      <div id="assetSeg-add" style="display:none">
+        <div class="setting-form">
+          <div class="form-row">
+            <div class="field"><label>자산 이름</label><input type="text" id="assetName" placeholder="예: 카카오뱅크"/></div>
+            <div class="field"><label>종류</label><select id="assetType"><option value="bank">은행 통장</option><option value="cash">현금</option></select></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>아이콘 (이모지)</label><input type="text" id="assetIcon" placeholder="🏦" maxlength="2"/></div>
+            <div class="field"><label>초기 잔액 (원)</label><input type="number" id="assetInitBal" placeholder="0" inputmode="numeric"/></div>
+          </div>
+          <button class="add-btn" onclick="addAsset()">자산 추가</button>
+        </div>
+      </div>
+      <div id="assetSeg-transfer" style="display:none">
+        <div class="setting-form">
+          <div class="form-row">
+            <div class="field"><label>출금 자산</label><select id="transferFrom"></select></div>
+            <div class="field"><label>입금 자산</label><select id="transferTo"></select></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>금액 (원)</label><input type="number" id="transferAmt" placeholder="0" inputmode="numeric"/></div>
+            <div class="field"><label>날짜</label><input type="date" id="transferDate"/></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>메모</label><input type="text" id="transferNote" placeholder="선택 사항"/></div>
+          </div>
+          <button class="add-btn" onclick="addTransfer()">이체 기록</button>
+        </div>
+        <div class="section-title" style="margin-top:4px">이체 내역</div>
+        <div id="transferList"><div class="empty">이체 내역이 없어요</div></div>
+      </div>
     </div>
 
     <div id="p-chart" class="panel">
@@ -279,6 +349,10 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
         <svg viewBox="0 0 24 24"><path d="M12 5H7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         <span class="label">기록</span>
       </button>
+      <button class="bot-tab" id="bt-asset" onclick="switchTab('asset',this)">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <span class="label">자산</span>
+      </button>
       <button class="bot-tab" id="bt-chart" onclick="switchTab('chart',this)">
         <svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
         <span class="label">분석</span>
@@ -330,7 +404,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, collection, addDoc, deleteDoc, setDoc, updateDoc, doc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, addDoc, deleteDoc, setDoc, updateDoc, doc, onSnapshot, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig={apiKey:"AIzaSyDwzfk7-3P4Afi4d3i965PZNERrFUJrEsM",authDomain:"budget-bbec2.firebaseapp.com",projectId:"budget-bbec2",storageBucket:"budget-bbec2.firebasestorage.app",messagingSenderId:"321441819817",appId:"1:321441819817:web:4c51f2efb940ee3e3e8db8"};
 const app=initializeApp(firebaseConfig);
@@ -345,8 +419,8 @@ const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10
 const PAYICONS={카드:'<path d="M2 9h20M2 13h6"/>',현금:'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',계좌이체:'<path d="M5 12h14M12 5l7 7-7 7"/>',간편결제:'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',기타:'<circle cx="12" cy="12" r="3"/>'};
 
 let txType='expense',curYear=new Date().getFullYear(),curMonth=new Date().getMonth();
-let txs=[],payments=[],categories=[],budgets=[],barInst=null,payBarInst=null,donutInst=null;
-let unsub=null,unsubPay=null,unsubCat=null,unsubBudget=null,currentUser=null,authMode='login';
+let txs=[],payments=[],categories=[],budgets=[],assets=[],transfers=[],barInst=null,payBarInst=null,donutInst=null;
+let unsub=null,unsubPay=null,unsubCat=null,unsubBudget=null,unsubAsset=null,unsubTransfer=null,currentUser=null,authMode='login';
 
 const fmt=n=>'₩'+Math.abs(n).toLocaleString('ko-KR');
 const getMonthTx=()=>txs.filter(t=>{const d=new Date(t.date);return d.getFullYear()===curYear&&d.getMonth()===curMonth;}).sort((a,b)=>new Date(b.date)-new Date(a.date));
@@ -378,7 +452,7 @@ window.doAuth=async function(){
   }
   btn.disabled=false;btn.textContent=authMode==='login'?'로그인':'회원가입';
 };
-window.doLogout=async function(){[unsub,unsubPay,unsubCat,unsubBudget].forEach(u=>{if(u)u();});await signOut(auth);};
+window.doLogout=async function(){[unsub,unsubPay,unsubCat,unsubBudget,unsubAsset,unsubTransfer].forEach(u=>{if(u)u();});await signOut(auth);};
 
 onAuthStateChanged(auth,user=>{
   if(user){
@@ -399,7 +473,7 @@ function subscribeAll(){
   setSyncing(true);
   unsub=onSnapshot(collection(db,'transactions'),snap=>{txs=snap.docs.map(d=>({id:d.id,...d.data()}));setSyncing(false);refresh();},()=>setSyncing(false));
   if(unsubPay)unsubPay();
-  unsubPay=onSnapshot(collection(db,'payments'),snap=>{payments=snap.docs.map(d=>({id:d.id,...d.data()}));renderPayList();updatePaySelect();});
+  unsubPay=onSnapshot(collection(db,'payments'),snap=>{payments=snap.docs.map(d=>({id:d.id,...d.data()}));renderPayList();updateAssetSelects();});
   if(unsubCat)unsubCat();
   unsubCat=onSnapshot(collection(db,'categories'),snap=>{
     categories=snap.docs.map(d=>({id:d.id,...d.data()}));
@@ -410,6 +484,18 @@ function subscribeAll(){
   });
   if(unsubBudget)unsubBudget();
   unsubBudget=onSnapshot(collection(db,'budgets'),snap=>{budgets=snap.docs.map(d=>({id:d.id,...d.data()}));renderBudgets();});
+
+  if(unsubAsset)unsubAsset();
+  unsubAsset=onSnapshot(collection(db,'assets'),snap=>{
+    assets=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderAssets();updateAssetSelects();
+  });
+
+  if(unsubTransfer)unsubTransfer();
+  unsubTransfer=onSnapshot(collection(db,'transfers'),snap=>{
+    transfers=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.date.localeCompare(a.date));
+    renderTransfers();
+  });
 }
 async function seedCats(){
   for(const c of DEFAULT_EXP) await addDoc(collection(db,'categories'),{...c,kind:'expense'});
@@ -614,6 +700,7 @@ window.switchTab=function(name,btn){
   btn.classList.add('active');
   if(name==='chart')renderChart();
   if(name==='budget')renderBudgets();
+  if(name==='asset'){renderAssets();renderTransfers();}
 };
 
 window.runAI=async function(){
@@ -697,16 +784,168 @@ window.saveTxEdit = async function() {
   } catch(e) { alert('수정 실패: ' + e.message); setSyncing(false); }
 };
 
+
+// ── 자산 관리 ──
+
+// 자산 잔액 계산 (초기잔액 + 수입거래 - 지출거래 + 이체입금 - 이체출금)
+function calcAssetBalance(assetId) {
+  const asset = assets.find(a => a.id === assetId);
+  if (!asset) return 0;
+  let bal = asset.initBalance || 0;
+  // 거래 내역 반영 (결제수단이 이 자산 이름인 것)
+  txs.forEach(t => {
+    if (t.payment === asset.name) {
+      bal += t.type === 'income' ? t.amount : -t.amount;
+    }
+  });
+  // 이체 반영
+  transfers.forEach(tr => {
+    if (tr.fromId === assetId) bal -= tr.amount;
+    if (tr.toId === assetId) bal += tr.amount;
+  });
+  return bal;
+}
+
+function calcTotalAsset() {
+  return assets.reduce((s, a) => s + calcAssetBalance(a.id), 0);
+}
+
+window.addAsset = async function() {
+  const name = document.getElementById('assetName').value.trim();
+  const type = document.getElementById('assetType').value;
+  const icon = document.getElementById('assetIcon').value.trim() || (type === 'cash' ? '💵' : '🏦');
+  const initBalance = parseInt(document.getElementById('assetInitBal').value) || 0;
+  if (!name) { alert('자산 이름을 입력해주세요'); return; }
+  if (assets.find(a => a.name === name)) { alert('이미 등록된 이름이에요'); return; }
+  try {
+    await addDoc(collection(db, 'assets'), { name, type, icon, initBalance, createdAt: serverTimestamp() });
+    document.getElementById('assetName').value = '';
+    document.getElementById('assetInitBal').value = '';
+    document.getElementById('assetIcon').value = '';
+    alert('✅ ' + name + ' 자산이 추가되었어요!');
+  } catch(e) { alert('저장 실패: ' + e.message); }
+};
+
+window.delAsset = async function(id) {
+  if (!confirm('자산을 삭제하시겠어요?\n관련 이체 내역도 함께 삭제됩니다.')) return;
+  try {
+    await deleteDoc(doc(db, 'assets', id));
+    // 관련 이체도 삭제
+    const related = transfers.filter(t => t.fromId === id || t.toId === id);
+    for (const t of related) await deleteDoc(doc(db, 'transfers', t.id));
+  } catch(e) { alert('삭제 실패: ' + e.message); }
+};
+
+window.addTransfer = async function() {
+  const fromId = document.getElementById('transferFrom').value;
+  const toId = document.getElementById('transferTo').value;
+  const amt = parseInt(document.getElementById('transferAmt').value);
+  const date = document.getElementById('transferDate').value;
+  const note = document.getElementById('transferNote').value.trim();
+  if (!fromId || !toId) { alert('출금/입금 자산을 선택해주세요'); return; }
+  if (fromId === toId) { alert('같은 자산끼리는 이체할 수 없어요'); return; }
+  if (!amt || amt <= 0 || !date) { alert('금액과 날짜를 입력해주세요'); return; }
+  const fromAsset = assets.find(a => a.id === fromId);
+  const toAsset = assets.find(a => a.id === toId);
+  try {
+    await addDoc(collection(db, 'transfers'), {
+      fromId, toId,
+      fromName: fromAsset?.name || '',
+      toName: toAsset?.name || '',
+      amount: amt, date, note,
+      createdAt: serverTimestamp()
+    });
+    document.getElementById('transferAmt').value = '';
+    document.getElementById('transferNote').value = '';
+  } catch(e) { alert('저장 실패: ' + e.message); }
+};
+
+window.delTransfer = async function(id) {
+  if (!confirm('이체 내역을 삭제하시겠어요?')) return;
+  try { await deleteDoc(doc(db, 'transfers', id)); }
+  catch(e) { alert('삭제 실패: ' + e.message); }
+};
+
+window.switchAssetSeg = function(seg, btn) {
+  ['accounts','add','transfer'].forEach(s => {
+    document.getElementById('assetSeg-' + s).style.display = s === seg ? 'block' : 'none';
+    document.getElementById('seg-' + s).classList.toggle('active', s === seg);
+  });
+};
+
+function updateAssetSelects() {
+  const fromSel = document.getElementById('transferFrom');
+  const toSel = document.getElementById('transferTo');
+  if (!fromSel || !toSel) return;
+  const opts = assets.map(a => '<option value="' + a.id + '">' + a.icon + ' ' + a.name + '</option>').join('');
+  fromSel.innerHTML = opts;
+  toSel.innerHTML = opts;
+  // 결제수단 select에 자산 연동 (자산 이름 기준)
+  const txPay = document.getElementById('txPay');
+  const editPay = document.getElementById('editPay');
+  const assetOpts = assets.map(a => '<option value="' + a.name + '">' + a.icon + ' ' + a.name + '</option>').join('');
+  if (txPay) {
+    const cur = txPay.value;
+    txPay.innerHTML = '<option value="">선택 안 함</option>' + assetOpts + (payments.length ? '<optgroup label="기타 결제수단">' + payments.map(p => '<option value="' + p.name + '">' + p.name + '</option>').join('') + '</optgroup>' : '');
+    if (cur) txPay.value = cur;
+  }
+  if (editPay) {
+    const cur2 = editPay.value;
+    editPay.innerHTML = '<option value="">선택 안 함</option>' + assetOpts + (payments.length ? payments.map(p => '<option value="' + p.name + '">' + p.name + '</option>').join('') : '');
+    if (cur2) editPay.value = cur2;
+  }
+}
+
+function renderAssets() {
+  const el = document.getElementById('assetList');
+  if (!el) return;
+  if (!assets.length) { el.innerHTML = '<div class="empty">등록된 자산이 없어요<br>자산 추가 탭에서 추가해보세요</div>'; }
+  else {
+    el.innerHTML = assets.map(a => {
+      const bal = calcAssetBalance(a.id);
+      return `<div class="asset-item">
+        <div class="asset-icon" style="background:${bal>=0?'var(--al)':'#FCEBEB'}">${a.icon}</div>
+        <div class="asset-info">
+          <div class="asset-name">${a.name}</div>
+          <div class="asset-bank">${a.type==='cash'?'현금':'은행 통장'}</div>
+        </div>
+        <div class="asset-bal ${bal<0?'neg':''}">${bal<0?'-':''}${fmt(bal)}</div>
+        <button class="asset-del" onclick="delAsset('${a.id}')">×</button>
+      </div>`;
+    }).join('');
+  }
+  // 총자산 업데이트
+  const total = calcTotalAsset();
+  const el2 = document.getElementById('totalAsset');
+  if (el2) el2.textContent = (total < 0 ? '-' : '') + fmt(total);
+}
+
+function renderTransfers() {
+  const el = document.getElementById('transferList');
+  if (!el) return;
+  if (!transfers.length) { el.innerHTML = '<div class="empty">이체 내역이 없어요</div>'; return; }
+  el.innerHTML = transfers.slice(0, 30).map(t => `
+    <div class="transfer-item">
+      <div class="transfer-info">
+        <div class="transfer-name">${t.fromName} → ${t.toName}${t.note ? ' · ' + t.note : ''}</div>
+        <div class="transfer-date">${t.date}</div>
+      </div>
+      <div class="transfer-amt">${fmt(t.amount)}</div>
+      <button class="transfer-del" onclick="delTransfer('${t.id}')">×</button>
+    </div>`).join('');
+}
+
 window.saveKey=function(){const k=document.getElementById('keyInput').value.trim();if(!k)return;localStorage.setItem('gaebub_key',k);document.getElementById('keyInput').value='';document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';};
-window.showVersionInfo=function(){if(confirm('가계부 v1.6.0\n빌드: 2026.03.20 14:47:58 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
+window.showVersionInfo=function(){if(confirm('가계부 v1.7.0\n빌드: 2026.03.20 22:19:29 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
 window.clearCache=async function(){try{if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistrations();for(const x of r)await x.unregister();}if('caches' in window){const k=await caches.keys();for(const x of k)await caches.delete(x);}alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');setTimeout(()=>window.location.reload(true),300);}catch(e){alert('오류: '+e.message);}};
 
-function refresh(){updateSummary();renderList();}
-function init(){document.getElementById('txDate').value=new Date().toISOString().split('T')[0];if(localStorage.getItem('gaebub_key'))document.getElementById('keyStatus').textContent='✅ API 키가 설정되어 있어요.';refresh();}
+function refresh(){updateSummary();renderList();renderAssets();}
+function init(){document.getElementById('txDate').value=new Date().toISOString().split('T')[0];
+  document.getElementById('transferDate').value=new Date().toISOString().split('T')[0];if(localStorage.getItem('gaebub_key'))document.getElementById('keyStatus').textContent='✅ API 키가 설정되어 있어요.';refresh();}
 document.getElementById('authPw').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();});
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/budget/sw.js',{scope:'/budget/'}).catch(()=>{});}</script>
 </body>
 </html>
-<!-- 가계부 v1.6.0 | 빌드: 2026.03.20 14:47:58 (KST) -->
+<!-- 가계부 v1.7.0 | 빌드: 2026.03.20 22:19:29 (KST) -->
