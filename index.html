@@ -1,4 +1,4 @@
-<!-- 가계부 v1.8.5 | 빌드: 2026.03.21 00:19:42 (KST) -->
+<!-- 가계부 v1.9.0 | 빌드: 2026.03.21 21:20:41 (KST) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -199,7 +199,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 <div id="appScreen">
   <div class="topnav">
     <div class="topnav-row">
-      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.8.5</span></span>
+      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.9.0</span></span>
       <div class="user-info">
         <span class="user-email" id="userEmail"></span>
         <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -481,6 +481,7 @@ onAuthStateChanged(auth,user=>{
     document.getElementById('appScreen').classList.add('on');
     document.getElementById('userEmail').textContent=user.email;
     subscribeAll();init();
+    if(window._pendingSharedText){setTimeout(()=>{handleSharedText(window._pendingSharedText);window._pendingSharedText=null;},1000);}
   }else{
     currentUser=null;txs=[];payments=[];categories=[];budgets=[];
     document.getElementById('authScreen').style.display='flex';document.getElementById('authScreen').style.flexDirection='column';
@@ -956,12 +957,54 @@ function renderTransfers() {
 }
 
 window.saveKey=function(){const k=document.getElementById('keyInput').value.trim();if(!k)return;localStorage.setItem('gaebub_key',k);document.getElementById('keyInput').value='';document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';};
-window.showVersionInfo=function(){if(confirm('가계부 v1.8.5\n빌드: 2026.03.21 00:19:42 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
+window.showVersionInfo=function(){if(confirm('가계부 v1.9.0\n빌드: 2026.03.21 21:20:41 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
 window.clearCache=async function(){try{if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistrations();for(const x of r)await x.unregister();}if('caches' in window){const k=await caches.keys();for(const x of k)await caches.delete(x);}alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');const sp=document.getElementById('splash')||document.createElement('div');
     if(!document.getElementById('splash')){sp.id='splash';sp.innerHTML='<div class="s-logo">💰</div><div class="s-title">가계부</div>';document.body.appendChild(sp);}
     sp.style.cssText='position:fixed;inset:0;background:#1D9E75;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999;opacity:1';setTimeout(()=>window.location.reload(true),300);}catch(e){alert('오류: '+e.message);}};
 
 function refresh(){updateSummary();renderList();renderAssets();}
+
+
+// ── 카카오톡 공유 수신 & 파싱 ──
+function parseKakaoBank(text) {
+  const result = {};
+  const amtMatch = text.match(/([\d,]+)원 승인/);
+  if (amtMatch) result.amount = parseInt(amtMatch[1].replace(/,/g, ''));
+  const merchantMatch = text.match(/^(.+?)\s+[\d,]+원 승인/);
+  if (merchantMatch) result.merchant = merchantMatch[1].trim();
+  const dateMatch = text.match(/(\d{2})\/(\d{2})\s+\d{2}:\d{2}/);
+  if (dateMatch) {
+    const year = new Date().getFullYear();
+    result.date = year + '-' + dateMatch[1] + '-' + dateMatch[2];
+  }
+  return result;
+}
+
+function handleSharedText(text) {
+  if (!text) return;
+  const parsed = parseKakaoBank(text);
+  if (!parsed.amount) { alert('금액을 파싱할 수 없었어요.\n직접 입력해주세요.'); return; }
+  const recordBtn = document.getElementById('bt-record');
+  if (recordBtn) switchTab('record', recordBtn);
+  setTimeout(() => {
+    if (document.getElementById('txAmt')) document.getElementById('txAmt').value = parsed.amount;
+    if (parsed.merchant && document.getElementById('txNote')) document.getElementById('txNote').value = parsed.merchant;
+    if (parsed.date && document.getElementById('txDate')) document.getElementById('txDate').value = parsed.date;
+    setType('expense');
+    alert('📋 공유 내역 자동 입력!\n\n가맹점: ' + (parsed.merchant||'-') + '\n금액: ₩' + (parsed.amount||0).toLocaleString() + '\n날짜: ' + (parsed.date||'-') + '\n\n확인 후 추가하기를 눌러주세요.');
+  }, 300);
+}
+
+function checkSharedContent() {
+  const params = new URLSearchParams(window.location.search);
+  const sharedText = params.get('shared_text');
+  if (!sharedText) return;
+  const url = new URL(window.location);
+  url.searchParams.delete('shared_text');
+  window.history.replaceState({}, '', url);
+  if (currentUser) { handleSharedText(sharedText); }
+  else { window._pendingSharedText = sharedText; }
+}
 
 function init(){
 
@@ -987,4 +1030,4 @@ document.getElementById('authPw').addEventListener('keydown',e=>{if(e.key==='Ent
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/budget/sw.js',{scope:'/budget/'}).catch(()=>{});}</script>
 </body>
 </html>
-<!-- 가계부 v1.8.5 | 빌드: 2026.03.21 00:19:42 (KST) -->
+<!-- 가계부 v1.9.0 | 빌드: 2026.03.21 21:20:41 (KST) -->
