@@ -8,6 +8,13 @@
   "theme_color": "#1D9E75",
   "orientation": "portrait",
   "lang": "ko",
+  "share_target": {
+    "action": "/budget/",
+    "method": "GET",
+    "params": {
+      "text": "shared_text"
+    }
+  },
   "icons": [
     {
       "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='115' fill='%231D9E75'/><text y='380' font-size='320' text-anchor='middle' x='256'>💰</text></svg>",
