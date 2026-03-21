@@ -1,4 +1,4 @@
-<!-- 가계부 v1.9.0 | 빌드: 2026.03.21 21:20:41 (KST) -->
+<!-- 가계부 v1.9.1 | 빌드: 2026.03.21 21:30:32 (KST) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -174,6 +174,10 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 .bot-tab.active svg{transform:scale(1.1)}
 .bot-tab:active{opacity:0.6}
 @media(prefers-color-scheme:dark){.bot-tab{color:var(--t2)}.bot-tab.active{color:var(--a)}}
+
+.clip-btn{width:100%;padding:11px;background:var(--bg);border:1.5px dashed var(--bd);border-radius:10px;color:var(--t2);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
+.clip-btn:active{opacity:0.7}
+.clip-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -199,7 +203,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 <div id="appScreen">
   <div class="topnav">
     <div class="topnav-row">
-      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.9.0</span></span>
+      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.9.1</span></span>
       <div class="user-info">
         <span class="user-email" id="userEmail"></span>
         <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -220,6 +224,10 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 
   <div class="body">
     <div id="p-record" class="panel active">
+      <button class="clip-btn" onclick="pasteFromClipboard()">
+        <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+        카카오뱅크 알림 붙여넣기
+      </button>
       <div class="add-form">
         <div class="type-toggle">
           <button class="type-btn exp-btn active" id="btnExp" onclick="setType('expense')">지출</button>
@@ -957,7 +965,7 @@ function renderTransfers() {
 }
 
 window.saveKey=function(){const k=document.getElementById('keyInput').value.trim();if(!k)return;localStorage.setItem('gaebub_key',k);document.getElementById('keyInput').value='';document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';};
-window.showVersionInfo=function(){if(confirm('가계부 v1.9.0\n빌드: 2026.03.21 21:20:41 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
+window.showVersionInfo=function(){if(confirm('가계부 v1.9.1\n빌드: 2026.03.21 21:30:32 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
 window.clearCache=async function(){try{if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistrations();for(const x of r)await x.unregister();}if('caches' in window){const k=await caches.keys();for(const x of k)await caches.delete(x);}alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');const sp=document.getElementById('splash')||document.createElement('div');
     if(!document.getElementById('splash')){sp.id='splash';sp.innerHTML='<div class="s-logo">💰</div><div class="s-title">가계부</div>';document.body.appendChild(sp);}
     sp.style.cssText='position:fixed;inset:0;background:#1D9E75;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999;opacity:1';setTimeout(()=>window.location.reload(true),300);}catch(e){alert('오류: '+e.message);}};
@@ -966,6 +974,19 @@ function refresh(){updateSummary();renderList();renderAssets();}
 
 
 // ── 카카오톡 공유 수신 & 파싱 ──
+
+window.pasteFromClipboard = async function() {
+  try {
+    const text = await navigator.clipboard.readText();
+    if (!text) { alert('클립보드가 비어있어요.\n카카오뱅크 알림 메시지를 먼저 복사해주세요.'); return; }
+    handleSharedText(text);
+  } catch(e) {
+    // 권한 거부 또는 실패시 수동 입력 안내
+    const text = prompt('카카오뱅크 알림 메시지를 붙여넣어 주세요:');
+    if (text) handleSharedText(text);
+  }
+};
+
 function parseKakaoBank(text) {
   const result = {};
   const amtMatch = text.match(/([\d,]+)원 승인/);
@@ -1030,4 +1051,4 @@ document.getElementById('authPw').addEventListener('keydown',e=>{if(e.key==='Ent
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/budget/sw.js',{scope:'/budget/'}).catch(()=>{});}</script>
 </body>
 </html>
-<!-- 가계부 v1.9.0 | 빌드: 2026.03.21 21:20:41 (KST) -->
+<!-- 가계부 v1.9.1 | 빌드: 2026.03.21 21:30:32 (KST) -->
