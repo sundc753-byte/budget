@@ -1,4 +1,4 @@
-<!-- 가계부 v1.9.1 | 빌드: 2026.03.21 21:30:32 (KST) -->
+<!-- 가계부 v2.0.0 | 빌드: 2026.03.24 10:11:27 (KST) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -203,7 +203,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 <div id="appScreen">
   <div class="topnav">
     <div class="topnav-row">
-      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v1.9.1</span></span>
+      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v2.0.0</span></span>
       <div class="user-info">
         <span class="user-email" id="userEmail"></span>
         <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -238,8 +238,12 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
           <div class="field"><label>날짜</label><input type="date" id="txDate"/></div>
         </div>
         <div class="form-row">
-          <div class="field"><label>카테고리</label><select id="txCat"></select></div>
+          <div class="field"><label>대분류</label><select id="txMainCat" onchange="onMainCatChange()"><option value="">전체</option></select></div>
+          <div class="field"><label>소분류</label><select id="txCat"></select></div>
+        </div>
+        <div class="form-row">
           <div class="field"><label>결제 수단</label><select id="txPay"><option value="">선택 안 함</option></select></div>
+          <div class="field"><label>누구를 위한</label><select id="txMember"><option value="">선택 안 함</option></select></div>
         </div>
         <div class="form-row">
           <div class="field"><label>메모</label><input type="text" id="txNote" placeholder="선택 사항"/></div>
@@ -329,21 +333,40 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 
     <div id="p-settings" class="panel">
       <div class="setting-form">
-        <div class="section-title">카테고리 관리</div>
+        <div class="section-title">대분류 관리</div>
+        <div class="form-row">
+          <div class="field"><label>대분류 이름</label><input type="text" id="mainCatName" placeholder="예: 생활비"/></div>
+          <div class="field"><label>아이콘</label><input type="text" id="mainCatIcon" placeholder="🏠" maxlength="2"/></div>
+        </div>
+        <button class="add-btn" onclick="addMainCategory()">대분류 추가</button>
+        <div class="chip-list" id="mainCatChips" style="margin-top:12px"></div>
+      </div>
+      <div class="setting-form">
+        <div class="section-title">소분류 관리</div>
         <div class="form-row">
           <div class="field"><label>이름</label><input type="text" id="catName" placeholder="예: 반려동물"/></div>
           <div class="field"><label>종류</label><select id="catKind"><option value="expense">지출</option><option value="income">수입</option></select></div>
         </div>
         <div class="form-row">
           <div class="field"><label>아이콘 (이모지)</label><input type="text" id="catIcon" placeholder="🐶" maxlength="2"/></div>
+          <div class="field"><label>대분류 연결</label><select id="catMainCat"><option value="">없음</option></select></div>
         </div>
-        <button class="add-btn" onclick="addCategory()">카테고리 추가</button>
+        <button class="add-btn" onclick="addCategory()">소분류 추가</button>
         <div style="margin-top:14px">
-          <div style="font-size:12px;color:var(--t2);margin-bottom:6px;font-weight:600">지출 카테고리</div>
+          <div style="font-size:12px;color:var(--t2);margin-bottom:6px;font-weight:600">지출 소분류</div>
           <div class="chip-list" id="expCatChips"></div>
-          <div style="font-size:12px;color:var(--t2);margin:12px 0 6px;font-weight:600">수입 카테고리</div>
+          <div style="font-size:12px;color:var(--t2);margin:12px 0 6px;font-weight:600">수입 소분류</div>
           <div class="chip-list" id="incCatChips"></div>
         </div>
+      </div>
+      <div class="setting-form">
+        <div class="section-title">구성원 관리</div>
+        <div class="form-row">
+          <div class="field"><label>이름</label><input type="text" id="memberName" placeholder="예: 자녀1"/></div>
+          <div class="field"><label>아이콘</label><input type="text" id="memberIcon" placeholder="👶" maxlength="2"/></div>
+        </div>
+        <button class="add-btn" onclick="addMember()">구성원 추가</button>
+        <div class="chip-list" id="memberChips" style="margin-top:12px"></div>
       </div>
       <div class="setting-form">
         <div class="section-title">결제 수단 관리</div>
@@ -414,8 +437,12 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
       <div class="field"><label>날짜</label><input type="date" id="editDate"/></div>
     </div>
     <div class="form-row">
-      <div class="field"><label>카테고리</label><select id="editCat"></select></div>
+      <div class="field"><label>대분류</label><select id="editMainCat" onchange="onEditMainCatChange()"><option value="">전체</option></select></div>
+      <div class="field"><label>소분류</label><select id="editCat"></select></div>
+    </div>
+    <div class="form-row">
       <div class="field"><label>결제 수단</label><select id="editPay"><option value="">선택 안 함</option></select></div>
+      <div class="field"><label>누구를 위한</label><select id="editMember"><option value="">선택 안 함</option></select></div>
     </div>
     <div class="form-row">
       <div class="field"><label>메모</label><input type="text" id="editNote" placeholder="선택 사항"/></div>
@@ -445,8 +472,8 @@ const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10
 const PAYICONS={카드:'<path d="M2 9h20M2 13h6"/>',현금:'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',계좌이체:'<path d="M5 12h14M12 5l7 7-7 7"/>',간편결제:'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',기타:'<circle cx="12" cy="12" r="3"/>'};
 
 let txType='expense',curYear=new Date().getFullYear(),curMonth=new Date().getMonth();
-let txs=[],payments=[],categories=[],budgets=[],assets=[],transfers=[],barInst=null,payBarInst=null,donutInst=null;
-let unsub=null,unsubPay=null,unsubCat=null,unsubBudget=null,unsubAsset=null,unsubTransfer=null,currentUser=null,authMode='login';
+let txs=[],payments=[],categories=[],budgets=[],assets=[],transfers=[],mainCategories=[],members=[],barInst=null,payBarInst=null,donutInst=null;
+let unsub=null,unsubPay=null,unsubCat=null,unsubBudget=null,unsubAsset=null,unsubTransfer=null,unsubMainCat=null,unsubMember=null,currentUser=null,authMode='login';
 
 const fmt=n=>'₩'+Math.abs(n).toLocaleString('ko-KR');
 const getMonthTx=()=>txs.filter(t=>{const d=new Date(t.date);return d.getFullYear()===curYear&&d.getMonth()===curMonth;}).sort((a,b)=>new Date(b.date)-new Date(a.date));
@@ -478,7 +505,7 @@ window.doAuth=async function(){
   }
   btn.disabled=false;btn.textContent=authMode==='login'?'로그인':'회원가입';
 };
-window.doLogout=async function(){[unsub,unsubPay,unsubCat,unsubBudget,unsubAsset,unsubTransfer].forEach(u=>{if(u)u();});await signOut(auth);};
+window.doLogout=async function(){[unsub,unsubPay,unsubCat,unsubBudget,unsubAsset,unsubTransfer,unsubMainCat,unsubMember].forEach(u=>{if(u)u();});await signOut(auth);};
 
 onAuthStateChanged(auth,user=>{
   const splash=document.getElementById('splash');
@@ -525,6 +552,20 @@ function subscribeAll(){
     transfers=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.date.localeCompare(a.date));
     renderTransfers();
   });
+
+  if(unsubMainCat)unsubMainCat();
+  unsubMainCat=onSnapshot(collection(db,'mainCategories'),snap=>{
+    mainCategories=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(!mainCategories.length) seedMainCategories();
+    renderMainCatChips();updateMainCatSelects();
+  });
+
+  if(unsubMember)unsubMember();
+  unsubMember=onSnapshot(collection(db,'members'),snap=>{
+    members=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(!members.length) seedMembers();
+    renderMemberChips();updateMemberSelects();
+  });
 }
 async function seedCats(){
   for(const c of DEFAULT_EXP) await addDoc(collection(db,'categories'),{...c,kind:'expense'});
@@ -539,7 +580,9 @@ window.addTx=async function(){
   btn.disabled=true;setSyncing(true);
   const cat=document.getElementById('txCat').value;
   try{
-    await addDoc(collection(db,'transactions'),{type:txType,amount:amt,date,category:cat,payment:document.getElementById('txPay').value||'',note:document.getElementById('txNote').value.trim(),userEmail:currentUser.email,uid:currentUser.uid,createdAt:serverTimestamp()});
+    await addDoc(collection(db,'transactions'),{type:txType,amount:amt,date,category:cat,payment:document.getElementById('txPay').value||'',
+      mainCat:document.getElementById('txMainCat')?.value||'',
+      member:document.getElementById('txMember')?.value||'',note:document.getElementById('txNote').value.trim(),userEmail:currentUser.email,uid:currentUser.uid,createdAt:serverTimestamp()});
     document.getElementById('txAmt').value='';
     document.getElementById('txNote').value='';
     if(txType==='expense') checkBudget(cat);
@@ -562,10 +605,14 @@ window.addCategory=async function(){
   const name=document.getElementById('catName').value.trim();
   const kind=document.getElementById('catKind').value;
   const icon=document.getElementById('catIcon').value.trim()||'📌';
+  const mainCat=document.getElementById('catMainCat')?.value||'';
   if(!name){alert('카테고리 이름을 입력해주세요');return;}
   if(categories.find(c=>c.name===name)){alert('이미 등록된 이름이에요');return;}
-  try{await addDoc(collection(db,'categories'),{name,kind,icon,createdAt:serverTimestamp()});document.getElementById('catName').value='';document.getElementById('catIcon').value='';}
-  catch(e){alert('저장 실패: '+e.message);}
+  try{
+    await addDoc(collection(db,'categories'),{name,kind,icon,mainCat,createdAt:serverTimestamp()});
+    document.getElementById('catName').value='';
+    document.getElementById('catIcon').value='';
+  }catch(e){alert('저장 실패: '+e.message);}
 };
 window.delCategory=async function(id){if(!confirm('삭제하시겠어요?'))return;try{await deleteDoc(doc(db,'categories',id));}catch(e){alert('삭제 실패: '+e.message);}};
 
@@ -592,13 +639,24 @@ window.setType=function(type){
   document.getElementById('btnInc').className='type-btn inc-btn'+(type==='income'?' active':'');
   updateCatSelects();
 };
-function updateCatSelects(){
-  const cats=txType==='expense'?getExpCats():getIncCats();
+function updateCatSelects(filterMainCat){
+  let cats=txType==='expense'?getExpCats():getIncCats();
+  if(filterMainCat) cats=cats.filter(c=>c.mainCat===filterMainCat);
   const sel=document.getElementById('txCat'),cur=sel.value;
-  sel.innerHTML=cats.map(c=>'<option value="'+c.name+'">'+c.icon+' '+c.name+'</option>').join('');
+  sel.innerHTML=cats.length?cats.map(c=>'<option value="'+c.name+'">'+c.icon+' '+c.name+'</option>').join(''):'<option value="">없음</option>';
   if(cur&&cats.find(c=>c.name===cur)) sel.value=cur;
   const bsel=document.getElementById('budgetCat');
   if(bsel) bsel.innerHTML=getExpCats().map(c=>'<option value="'+c.name+'">'+c.icon+' '+c.name+'</option>').join('');
+}
+
+function updateEditCatSelectFiltered(filterMainCat){
+  let cats=editType==='expense'?getExpCats():getIncCats();
+  if(filterMainCat) cats=cats.filter(c=>c.mainCat===filterMainCat);
+  const sel=document.getElementById('editCat');
+  if(!sel)return;
+  const cur=sel.value;
+  sel.innerHTML=cats.map(c=>'<option value="'+c.name+'">'+c.icon+' '+c.name+'</option>').join('');
+  if(cur&&cats.find(c=>c.name===cur)) sel.value=cur;
 }
 function updatePaySelect(){
   const sel=document.getElementById('txPay'),cur=sel.value;
@@ -652,7 +710,7 @@ function renderList(){
       <div class="tx-icon" style="background:${t.type==='income'?'#FCEBEB':'#E6F1FB'}">${getCatIcon(t.category)}</div>
       <div class="tx-info">
         <div class="tx-title">${t.note||t.category}</div>
-        <div class="tx-meta">${t.category}${t.payment?' · '+t.payment:''} · ${t.date}</div>
+        <div class="tx-meta">${t.mainCat?t.mainCat+' > ':''} ${t.category}${t.payment?' · '+t.payment:''}${t.member?' · '+t.member:''} · ${t.date}</div>
       </div>
       <div class="tx-right">
         <div class="tx-amount ${t.type==='income'?'inc':'exp'}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>
@@ -764,6 +822,8 @@ window.openEditModal = function(id) {
   document.getElementById('editAmt').value = t.amount;
   document.getElementById('editDate').value = t.date;
   document.getElementById('editNote').value = t.note || '';
+  if(document.getElementById('editMainCat')) document.getElementById('editMainCat').value = t.mainCat||'';
+  if(document.getElementById('editMember')) document.getElementById('editMember').value = t.member||'';
   // type toggle
   setEditType(t.type);
   // cat select
@@ -807,6 +867,8 @@ window.saveTxEdit = async function() {
       date,
       category: document.getElementById('editCat').value,
       payment: document.getElementById('editPay').value || '',
+      mainCat: document.getElementById('editMainCat')?.value || '',
+      member: document.getElementById('editMember')?.value || '',
       note: document.getElementById('editNote').value.trim(),
     });
     document.getElementById('editModal').classList.remove('open');
@@ -965,7 +1027,7 @@ function renderTransfers() {
 }
 
 window.saveKey=function(){const k=document.getElementById('keyInput').value.trim();if(!k)return;localStorage.setItem('gaebub_key',k);document.getElementById('keyInput').value='';document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';};
-window.showVersionInfo=function(){if(confirm('가계부 v1.9.1\n빌드: 2026.03.21 21:30:32 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
+window.showVersionInfo=function(){if(confirm('가계부 v2.0.0\n빌드: 2026.03.24 10:11:27 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
 window.clearCache=async function(){try{if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistrations();for(const x of r)await x.unregister();}if('caches' in window){const k=await caches.keys();for(const x of k)await caches.delete(x);}alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');const sp=document.getElementById('splash')||document.createElement('div');
     if(!document.getElementById('splash')){sp.id='splash';sp.innerHTML='<div class="s-logo">💰</div><div class="s-title">가계부</div>';document.body.appendChild(sp);}
     sp.style.cssText='position:fixed;inset:0;background:#1D9E75;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999;opacity:1';setTimeout(()=>window.location.reload(true),300);}catch(e){alert('오류: '+e.message);}};
@@ -1051,4 +1113,4 @@ document.getElementById('authPw').addEventListener('keydown',e=>{if(e.key==='Ent
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/budget/sw.js',{scope:'/budget/'}).catch(()=>{});}</script>
 </body>
 </html>
-<!-- 가계부 v1.9.1 | 빌드: 2026.03.21 21:30:32 (KST) -->
+<!-- 가계부 v2.0.0 | 빌드: 2026.03.24 10:11:27 (KST) -->
