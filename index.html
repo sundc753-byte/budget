@@ -1,4 +1,4 @@
-<!-- 가계부 v2.0.0 | 빌드: 2026.03.24 10:11:27 (KST) -->
+<!-- 가계부 v2.0.1 | 빌드: 2026.03.24 17:09:10 (KST) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -203,7 +203,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 <div id="appScreen">
   <div class="topnav">
     <div class="topnav-row">
-      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v2.0.0</span></span>
+      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v2.0.1</span></span>
       <div class="user-info">
         <span class="user-email" id="userEmail"></span>
         <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -1026,8 +1026,108 @@ function renderTransfers() {
     </div>`).join('');
 }
 
+
+// ── 대분류 관리 ──
+const DEFAULT_MAIN_CATS=[
+  {name:'식비/카페',icon:'🍽'},{name:'교통/여행',icon:'🚗'},{name:'쇼핑',icon:'🛍'},
+  {name:'문화/취미',icon:'🎬'},{name:'의료/건강',icon:'💊'},{name:'생활/주거',icon:'🏠'},
+  {name:'교육',icon:'📚'},{name:'수입',icon:'💰'},{name:'기타',icon:'📌'},
+];
+const DEFAULT_MEMBERS=[
+  {name:'본인',icon:'👤'},{name:'배우자',icon:'💑'},{name:'자녀',icon:'👶'},
+  {name:'부모님',icon:'👴'},{name:'공동',icon:'👪'},
+];
+
+async function seedMainCategories(){
+  for(const c of DEFAULT_MAIN_CATS) await addDoc(collection(db,'mainCategories'),{...c,createdAt:serverTimestamp()});
+}
+async function seedMembers(){
+  for(const m of DEFAULT_MEMBERS) await addDoc(collection(db,'members'),{...m,createdAt:serverTimestamp()});
+}
+
+window.addMainCategory=async function(){
+  const name=document.getElementById('mainCatName').value.trim();
+  const icon=document.getElementById('mainCatIcon').value.trim()||'📁';
+  if(!name){alert('대분류 이름을 입력해주세요');return;}
+  if(mainCategories.find(c=>c.name===name)){alert('이미 등록된 이름이에요');return;}
+  try{
+    await addDoc(collection(db,'mainCategories'),{name,icon,createdAt:serverTimestamp()});
+    document.getElementById('mainCatName').value='';
+    document.getElementById('mainCatIcon').value='';
+  }catch(e){alert('저장 실패: '+e.message);}
+};
+
+window.delMainCategory=async function(id){
+  if(!confirm('대분류를 삭제하시겠어요?'))return;
+  try{await deleteDoc(doc(db,'mainCategories',id));}
+  catch(e){alert('삭제 실패: '+e.message);}
+};
+
+window.addMember=async function(){
+  const name=document.getElementById('memberName').value.trim();
+  const icon=document.getElementById('memberIcon').value.trim()||'👤';
+  if(!name){alert('구성원 이름을 입력해주세요');return;}
+  if(members.find(m=>m.name===name)){alert('이미 등록된 이름이에요');return;}
+  try{
+    await addDoc(collection(db,'members'),{name,icon,createdAt:serverTimestamp()});
+    document.getElementById('memberName').value='';
+    document.getElementById('memberIcon').value='';
+  }catch(e){alert('저장 실패: '+e.message);}
+};
+
+window.delMember=async function(id){
+  if(!confirm('구성원을 삭제하시겠어요?'))return;
+  try{await deleteDoc(doc(db,'members',id));}
+  catch(e){alert('삭제 실패: '+e.message);}
+};
+
+function renderMainCatChips(){
+  const el=document.getElementById('mainCatChips');
+  if(!el)return;
+  el.innerHTML=mainCategories.map(c=>`<div class="chip">${c.icon} ${c.name}<button class="chip-del" onclick="delMainCategory('${c.id}')">×</button></div>`).join('')||'<span style="font-size:12px;color:var(--t2)">없음</span>';
+  const sel=document.getElementById('catMainCat');
+  if(sel) sel.innerHTML='<option value="">없음</option>'+mainCategories.map(c=>`<option value="${c.name}">${c.icon} ${c.name}</option>`).join('');
+}
+
+function renderMemberChips(){
+  const el=document.getElementById('memberChips');
+  if(!el)return;
+  el.innerHTML=members.map(m=>`<div class="chip">${m.icon} ${m.name}<button class="chip-del" onclick="delMember('${m.id}')">×</button></div>`).join('')||'<span style="font-size:12px;color:var(--t2)">없음</span>';
+}
+
+function updateMainCatSelects(){
+  const opts='<option value="">전체</option>'+mainCategories.map(c=>`<option value="${c.name}">${c.icon} ${c.name}</option>`).join('');
+  ['txMainCat','editMainCat'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    const cur=el.value;
+    el.innerHTML=opts;
+    if(cur)el.value=cur;
+  });
+  renderMainCatChips();
+}
+
+function updateMemberSelects(){
+  const opts='<option value="">선택 안 함</option>'+members.map(m=>`<option value="${m.name}">${m.icon} ${m.name}</option>`).join('');
+  ['txMember','editMember'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    const cur=el.value;
+    el.innerHTML=opts;
+    if(cur)el.value=cur;
+  });
+  renderMemberChips();
+}
+
+window.onMainCatChange=function(){
+  updateCatSelects(document.getElementById('txMainCat').value);
+};
+window.onEditMainCatChange=function(){
+  updateEditCatSelectFiltered(document.getElementById('editMainCat').value);
+};
+
 window.saveKey=function(){const k=document.getElementById('keyInput').value.trim();if(!k)return;localStorage.setItem('gaebub_key',k);document.getElementById('keyInput').value='';document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';};
-window.showVersionInfo=function(){if(confirm('가계부 v2.0.0\n빌드: 2026.03.24 10:11:27 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
+window.showVersionInfo=function(){if(confirm('가계부 v2.0.1\n빌드: 2026.03.24 17:09:10 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
 window.clearCache=async function(){try{if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistrations();for(const x of r)await x.unregister();}if('caches' in window){const k=await caches.keys();for(const x of k)await caches.delete(x);}alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');const sp=document.getElementById('splash')||document.createElement('div');
     if(!document.getElementById('splash')){sp.id='splash';sp.innerHTML='<div class="s-logo">💰</div><div class="s-title">가계부</div>';document.body.appendChild(sp);}
     sp.style.cssText='position:fixed;inset:0;background:#1D9E75;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999;opacity:1';setTimeout(()=>window.location.reload(true),300);}catch(e){alert('오류: '+e.message);}};
@@ -1113,4 +1213,4 @@ document.getElementById('authPw').addEventListener('keydown',e=>{if(e.key==='Ent
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/budget/sw.js',{scope:'/budget/'}).catch(()=>{});}</script>
 </body>
 </html>
-<!-- 가계부 v2.0.0 | 빌드: 2026.03.24 10:11:27 (KST) -->
+<!-- 가계부 v2.0.1 | 빌드: 2026.03.24 17:09:10 (KST) -->
