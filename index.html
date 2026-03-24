@@ -1,4 +1,4 @@
-<!-- 가계부 v2.0.1 | 빌드: 2026.03.24 17:09:10 (KST) -->
+<!-- 가계부 v2.0.2 | 빌드: 2026.03.24 21:50:42 (KST) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -178,6 +178,13 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 .clip-btn{width:100%;padding:11px;background:var(--bg);border:1.5px dashed var(--bd);border-radius:10px;color:var(--t2);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
 .clip-btn:active{opacity:0.7}
 .clip-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* 항목 수정 모달 */
+.item-edit-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:flex-end;justify-content:center}
+.item-edit-modal.open{display:flex}
+.item-edit-sheet{background:var(--sf);border-radius:20px 20px 0 0;padding:20px 16px;padding-bottom:max(env(safe-area-inset-bottom,0px),24px);width:100%;max-height:80vh;overflow-y:auto}
+.item-edit-handle{width:40px;height:4px;background:var(--bd);border-radius:2px;margin:0 auto 14px}
+.item-edit-title{font-size:16px;font-weight:700;color:var(--tx);margin-bottom:16px;text-align:center}
 </style>
 </head>
 <body>
@@ -203,7 +210,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 <div id="appScreen">
   <div class="topnav">
     <div class="topnav-row">
-      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v2.0.1</span></span>
+      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v2.0.2</span></span>
       <div class="user-info">
         <span class="user-email" id="userEmail"></span>
         <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -454,6 +461,21 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
   </div>
 </div>
 
+<!-- 항목 수정 모달 -->
+<div class="item-edit-modal" id="itemEditModal" onclick="closeItemEditModal(event)">
+  <div class="item-edit-sheet">
+    <div class="item-edit-handle"></div>
+    <div class="item-edit-title" id="itemEditTitle">수정</div>
+    <input type="hidden" id="itemEditId"/>
+    <input type="hidden" id="itemEditType"/>
+    <div id="itemEditFields"></div>
+    <div class="modal-btns" style="margin-top:12px">
+      <button class="modal-btn-cancel" onclick="closeItemEditModal()">취소</button>
+      <button class="modal-btn-save" onclick="saveItemEdit()">저장</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
@@ -666,12 +688,12 @@ function updatePaySelect(){
 function renderPayList(){
   const el=document.getElementById('payList');if(!el)return;
   if(!payments.length){el.innerHTML='<div class="empty">등록된 결제 수단이 없어요</div>';return;}
-  el.innerHTML=payments.sort((a,b)=>a.name.localeCompare(b.name)).map(p=>'<div class="pay-item"><div class="pay-icon"><svg viewBox="0 0 24 24">'+( PAYICONS[p.type]||PAYICONS['기타'])+'</svg></div><span class="pay-name">'+p.name+'</span><span class="pay-type-badge">'+p.type+'</span><button class="pay-del" onclick="delPayment(\''+p.id+'\')">×</button></div>').join('');
+  el.innerHTML=payments.sort((a,b)=>a.name.localeCompare(b.name)).map(p=>'<div class="pay-item" onclick="openItemEditModal(\'payment\',\''+p.id+'\')" style="cursor:pointer"><div class="pay-icon"><svg viewBox="0 0 24 24">'+( PAYICONS[p.type]||PAYICONS['기타'])+'</svg></div><span class="pay-name">'+p.name+'</span><span class="pay-type-badge">'+p.type+'</span><button class="pay-del" onclick="event.stopPropagation();delPayment(\''+p.id+'\')">×</button></div>').join('');
 }
 function renderCatChips(){
   const ee=document.getElementById('expCatChips'),ii=document.getElementById('incCatChips');if(!ee||!ii)return;
-  ee.innerHTML=getExpCats().map(c=>'<div class="chip">'+c.icon+' '+c.name+'<button class="chip-del" onclick="delCategory(\''+c.id+'\')">×</button></div>').join('')||'<span style="font-size:12px;color:var(--t2)">없음</span>';
-  ii.innerHTML=getIncCats().map(c=>'<div class="chip">'+c.icon+' '+c.name+'<button class="chip-del" onclick="delCategory(\''+c.id+'\')">×</button></div>').join('')||'<span style="font-size:12px;color:var(--t2)">없음</span>';
+  ee.innerHTML=getExpCats().map(c=>'<div class="chip" onclick="openItemEditModal(\'subCat\',\''+c.id+'\')" style="cursor:pointer">'+c.icon+' '+c.name+'<button class="chip-del" onclick="event.stopPropagation();delCategory(\''+c.id+'\')">×</button></div>').join('')||'<span style="font-size:12px;color:var(--t2)">없음</span>';
+  ii.innerHTML=getIncCats().map(c=>'<div class="chip" onclick="openItemEditModal(\'subCat\',\''+c.id+'\')" style="cursor:pointer">'+c.icon+' '+c.name+'<button class="chip-del" onclick="event.stopPropagation();delCategory(\''+c.id+'\')">×</button></div>').join('')||'<span style="font-size:12px;color:var(--t2)">없음</span>';
 }
 function renderBudgets(){
   const el=document.getElementById('budgetList');if(!el)return;
@@ -992,7 +1014,7 @@ function renderAssets() {
   if (!el) return;
   if (!assets.length) { el.innerHTML = '<div class="empty">등록된 자산이 없어요<br>자산 추가 탭에서 추가해보세요</div>'; }
   else {
-    el.innerHTML = assets.map(a => {
+    el.innerHTML = assets.map(a => { const editBtn = `<button class="asset-del" style="color:var(--a);margin-right:4px" onclick="event.stopPropagation();openItemEditModal('asset','${a.id}')">✎</button>`;
       const bal = calcAssetBalance(a.id);
       return `<div class="asset-item">
         <div class="asset-icon" style="background:${bal>=0?'var(--al)':'#FCEBEB'}">${a.icon}</div>
@@ -1084,7 +1106,7 @@ window.delMember=async function(id){
 function renderMainCatChips(){
   const el=document.getElementById('mainCatChips');
   if(!el)return;
-  el.innerHTML=mainCategories.map(c=>`<div class="chip">${c.icon} ${c.name}<button class="chip-del" onclick="delMainCategory('${c.id}')">×</button></div>`).join('')||'<span style="font-size:12px;color:var(--t2)">없음</span>';
+  el.innerHTML=mainCategories.map(c=>`<div class="chip" onclick="openItemEditModal('mainCat','${c.id}')" style="cursor:pointer">${c.icon} ${c.name}<button class="chip-del" onclick="event.stopPropagation();delMainCategory('${c.id}')">×</button></div>`).join('')||'<span style="font-size:12px;color:var(--t2)">없음</span>';
   const sel=document.getElementById('catMainCat');
   if(sel) sel.innerHTML='<option value="">없음</option>'+mainCategories.map(c=>`<option value="${c.name}">${c.icon} ${c.name}</option>`).join('');
 }
@@ -1092,7 +1114,7 @@ function renderMainCatChips(){
 function renderMemberChips(){
   const el=document.getElementById('memberChips');
   if(!el)return;
-  el.innerHTML=members.map(m=>`<div class="chip">${m.icon} ${m.name}<button class="chip-del" onclick="delMember('${m.id}')">×</button></div>`).join('')||'<span style="font-size:12px;color:var(--t2)">없음</span>';
+  el.innerHTML=members.map(m=>`<div class="chip" onclick="openItemEditModal('member','${m.id}')" style="cursor:pointer">${m.icon} ${m.name}<button class="chip-del" onclick="event.stopPropagation();delMember('${m.id}')">×</button></div>`).join('')||'<span style="font-size:12px;color:var(--t2)">없음</span>';
 }
 
 function updateMainCatSelects(){
@@ -1126,8 +1148,121 @@ window.onEditMainCatChange=function(){
   updateEditCatSelectFiltered(document.getElementById('editMainCat').value);
 };
 
+
+// ── 항목 수정 공통 모달 ──
+const ITEM_EDIT_FIELDS = {
+  mainCat: {
+    title: '대분류 수정',
+    fields: () => `
+      <div class="form-row"><div class="field"><label>아이콘</label><input type="text" id="ief-icon" maxlength="2" placeholder="📁"/></div><div class="field"><label>이름</label><input type="text" id="ief-name" placeholder="이름"/></div></div>`
+  },
+  subCat: {
+    title: '소분류 수정',
+    fields: () => `
+      <div class="form-row"><div class="field"><label>아이콘</label><input type="text" id="ief-icon" maxlength="2" placeholder="📌"/></div><div class="field"><label>이름</label><input type="text" id="ief-name" placeholder="이름"/></div></div>
+      <div class="form-row">
+        <div class="field"><label>종류</label><select id="ief-kind"><option value="expense">지출</option><option value="income">수입</option></select></div>
+        <div class="field"><label>대분류</label><select id="ief-mainCat"><option value="">없음</option>${mainCategories.map(c=>`<option value="${c.name}">${c.icon} ${c.name}</option>`).join('')}</select></div>
+      </div>`
+  },
+  member: {
+    title: '구성원 수정',
+    fields: () => `
+      <div class="form-row"><div class="field"><label>아이콘</label><input type="text" id="ief-icon" maxlength="2" placeholder="👤"/></div><div class="field"><label>이름</label><input type="text" id="ief-name" placeholder="이름"/></div></div>`
+  },
+  payment: {
+    title: '결제수단 수정',
+    fields: () => `
+      <div class="form-row"><div class="field"><label>이름</label><input type="text" id="ief-name" placeholder="이름"/></div>
+      <div class="field"><label>종류</label><select id="ief-payType"><option value="카드">카드</option><option value="현금">현금</option><option value="계좌이체">계좌이체</option><option value="간편결제">간편결제</option><option value="기타">기타</option></select></div></div>`
+  },
+  asset: {
+    title: '자산 수정',
+    fields: () => `
+      <div class="form-row"><div class="field"><label>아이콘</label><input type="text" id="ief-icon" maxlength="2" placeholder="🏦"/></div><div class="field"><label>이름</label><input type="text" id="ief-name" placeholder="이름"/></div></div>
+      <div class="form-row"><div class="field"><label>종류</label><select id="ief-assetType"><option value="bank">은행 통장</option><option value="cash">현금</option></select></div>
+      <div class="field"><label>초기 잔액</label><input type="number" id="ief-initBalance" inputmode="numeric" placeholder="0"/></div></div>`
+  }
+};
+
+window.openItemEditModal = function(type, id) {
+  const cfg = ITEM_EDIT_FIELDS[type];
+  if (!cfg) return;
+  document.getElementById('itemEditTitle').textContent = cfg.title;
+  document.getElementById('itemEditId').value = id;
+  document.getElementById('itemEditType').value = type;
+  document.getElementById('itemEditFields').innerHTML = cfg.fields();
+
+  // 현재 값 채우기
+  let item;
+  if (type === 'mainCat') item = mainCategories.find(c => c.id === id);
+  else if (type === 'subCat') item = categories.find(c => c.id === id);
+  else if (type === 'member') item = members.find(m => m.id === id);
+  else if (type === 'payment') item = payments.find(p => p.id === id);
+  else if (type === 'asset') item = assets.find(a => a.id === id);
+
+  if (!item) return;
+  const nameEl = document.getElementById('ief-name');
+  const iconEl = document.getElementById('ief-icon');
+  if (nameEl) nameEl.value = item.name || '';
+  if (iconEl) iconEl.value = item.icon || '';
+
+  if (type === 'subCat') {
+    const kindEl = document.getElementById('ief-kind');
+    const mainCatEl = document.getElementById('ief-mainCat');
+    if (kindEl) kindEl.value = item.kind || 'expense';
+    if (mainCatEl) mainCatEl.value = item.mainCat || '';
+  } else if (type === 'payment') {
+    const ptEl = document.getElementById('ief-payType');
+    if (ptEl) ptEl.value = item.type || '카드';
+  } else if (type === 'asset') {
+    const atEl = document.getElementById('ief-assetType');
+    const balEl = document.getElementById('ief-initBalance');
+    if (atEl) atEl.value = item.type || 'bank';
+    if (balEl) balEl.value = item.initBalance || 0;
+  }
+
+  document.getElementById('itemEditModal').classList.add('open');
+};
+
+window.closeItemEditModal = function(e) {
+  if (e && e.target !== document.getElementById('itemEditModal')) return;
+  document.getElementById('itemEditModal').classList.remove('open');
+};
+
+window.saveItemEdit = async function() {
+  const id = document.getElementById('itemEditId').value;
+  const type = document.getElementById('itemEditType').value;
+  const name = document.getElementById('ief-name')?.value.trim();
+  const icon = document.getElementById('ief-icon')?.value.trim();
+
+  if (!name) { alert('이름을 입력해주세요'); return; }
+
+  let colName, data;
+  if (type === 'mainCat') {
+    colName = 'mainCategories'; data = {name, icon: icon||'📁'};
+  } else if (type === 'subCat') {
+    colName = 'categories';
+    data = {name, icon: icon||'📌', kind: document.getElementById('ief-kind')?.value||'expense', mainCat: document.getElementById('ief-mainCat')?.value||''};
+  } else if (type === 'member') {
+    colName = 'members'; data = {name, icon: icon||'👤'};
+  } else if (type === 'payment') {
+    colName = 'payments'; data = {name, type: document.getElementById('ief-payType')?.value||'카드'};
+  } else if (type === 'asset') {
+    colName = 'assets';
+    data = {name, icon: icon||'🏦', type: document.getElementById('ief-assetType')?.value||'bank', initBalance: parseInt(document.getElementById('ief-initBalance')?.value)||0};
+  }
+
+  if (!colName) return;
+  setSyncing(true);
+  try {
+    await updateDoc(doc(db, colName, id), data);
+    document.getElementById('itemEditModal').classList.remove('open');
+  } catch(e) { alert('수정 실패: ' + e.message); setSyncing(false); }
+};
+
 window.saveKey=function(){const k=document.getElementById('keyInput').value.trim();if(!k)return;localStorage.setItem('gaebub_key',k);document.getElementById('keyInput').value='';document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';};
-window.showVersionInfo=function(){if(confirm('가계부 v2.0.1\n빌드: 2026.03.24 17:09:10 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
+window.showVersionInfo=function(){if(confirm('가계부 v2.0.2\n빌드: 2026.03.24 21:50:42 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
 window.clearCache=async function(){try{if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistrations();for(const x of r)await x.unregister();}if('caches' in window){const k=await caches.keys();for(const x of k)await caches.delete(x);}alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');const sp=document.getElementById('splash')||document.createElement('div');
     if(!document.getElementById('splash')){sp.id='splash';sp.innerHTML='<div class="s-logo">💰</div><div class="s-title">가계부</div>';document.body.appendChild(sp);}
     sp.style.cssText='position:fixed;inset:0;background:#1D9E75;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999;opacity:1';setTimeout(()=>window.location.reload(true),300);}catch(e){alert('오류: '+e.message);}};
@@ -1213,4 +1348,4 @@ document.getElementById('authPw').addEventListener('keydown',e=>{if(e.key==='Ent
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/budget/sw.js',{scope:'/budget/'}).catch(()=>{});}</script>
 </body>
 </html>
-<!-- 가계부 v2.0.1 | 빌드: 2026.03.24 17:09:10 (KST) -->
+<!-- 가계부 v2.0.2 | 빌드: 2026.03.24 21:50:42 (KST) -->
