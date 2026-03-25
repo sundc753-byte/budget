@@ -2,14 +2,14 @@
   "name": "가계부",
   "short_name": "가계부",
   "description": "AI 소비 분석 가계부",
-  "start_url": "/budget/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#1D9E75",
   "theme_color": "#1D9E75",
   "orientation": "portrait",
   "lang": "ko",
   "share_target": {
-    "action": "/budget/",
+    "action": "/",
     "method": "GET",
     "params": {
       "text": "shared_text"
