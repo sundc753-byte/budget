@@ -1,9 +1,9 @@
-<!-- 가계부 v2.0.5 | 빌드: 2026.03.26 (KST) | fix: iOS 하단바 키보드 대응 -->
+<!-- 가계부 v2.1.1 | 빌드: 2026.03.27 01:15:00 (KST) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=overlays-content"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="가계부"/>
@@ -210,7 +210,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 <div id="appScreen">
   <div class="topnav">
     <div class="topnav-row">
-      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v2.0.4</span></span>
+      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v2.1.1</span></span>
       <div class="user-info">
         <span class="user-email" id="userEmail"></span>
         <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -1262,7 +1262,7 @@ window.saveItemEdit = async function() {
 };
 
 window.saveKey=function(){const k=document.getElementById('keyInput').value.trim();if(!k)return;localStorage.setItem('gaebub_key',k);document.getElementById('keyInput').value='';document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';};
-window.showVersionInfo=function(){if(confirm('가계부 v2.0.4\n빌드: 2026.03.26 21:25:45 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
+window.showVersionInfo=function(){if(confirm('가계부 v2.1.1\n빌드: 2026.03.27 01:15:00 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
 window.clearCache=async function(){try{if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistrations();for(const x of r)await x.unregister();}if('caches' in window){const k=await caches.keys();for(const x of k)await caches.delete(x);}alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');const sp=document.getElementById('splash')||document.createElement('div');
     if(!document.getElementById('splash')){sp.id='splash';sp.innerHTML='<div class="s-logo">💰</div><div class="s-title">가계부</div>';document.body.appendChild(sp);}
     sp.style.cssText='position:fixed;inset:0;background:#1D9E75;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999;opacity:1';setTimeout(()=>window.location.reload(true),300);}catch(e){alert('오류: '+e.message);}};
@@ -1326,36 +1326,82 @@ function checkSharedContent() {
 
 function init(){
 
-// iOS 하단바 키보드 대응 (visualViewport API)
-const bottomBar = document.querySelector('.bottom-bar');
-if (window.visualViewport && bottomBar) {
-  let ticking = false;
-  const onViewportChange = () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      const vv = window.visualViewport;
-      const isKeyboardOpen = vv.height < window.innerHeight * 0.75;
-      if (isKeyboardOpen) {
-        bottomBar.style.transform = 'translateY(100%)';
-      } else {
-        bottomBar.style.transform = 'translateY(0)';
-      }
-      ticking = false;
-    });
-  };
-  window.visualViewport.addEventListener('resize', onViewportChange);
-} else {
-  // fallback for browsers without visualViewport
+// iOS 하단바 키보드 대응 v2 (position 기반, 확실한 복원)
+(function(){
+  const bar = document.querySelector('.bottom-bar');
+  const body = document.querySelector('.body');
+  if (!bar) return;
+
+  let isKeyboardOpen = false;
+
+  function hideBar() {
+    if (isKeyboardOpen) return;
+    isKeyboardOpen = true;
+    bar.style.transform = 'translateY(100%)';
+    bar.style.pointerEvents = 'none';
+  }
+
+  function showBar() {
+    if (!isKeyboardOpen) return;
+    isKeyboardOpen = false;
+    // iOS Safari 뷰포트 복원 대기 후 강제 리페인트
+    setTimeout(function(){
+      bar.style.transform = 'translateY(0)';
+      bar.style.pointerEvents = '';
+      // iOS에서 fixed 요소 위치 꼬임 방지: 강제 reflow
+      bar.style.display = 'none';
+      bar.offsetHeight; // force reflow
+      bar.style.display = '';
+      // 스크롤 위치 보정
+      if (body) body.scrollTop = body.scrollTop;
+    }, 350);
+  }
+
+  // 1차: focusin/focusout (가장 빠른 반응)
   document.addEventListener('focusin', function(e){
-    if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT'){
-      bottomBar && (bottomBar.style.transform = 'translateY(100%)');
+    var t = e.target;
+    if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT') {
+      // type=date, type=select 등 키보드 안 뜨는 것도 있으므로 약간 지연
+      setTimeout(hideBar, 50);
     }
   });
+
   document.addEventListener('focusout', function(){
-    setTimeout(function(){ bottomBar && (bottomBar.style.transform = 'translateY(0)'); }, 100);
+    // 다른 input으로 포커스 이동하는 경우 대비 지연
+    setTimeout(function(){
+      if (!document.activeElement ||
+          (document.activeElement.tagName !== 'INPUT' &&
+           document.activeElement.tagName !== 'TEXTAREA' &&
+           document.activeElement.tagName !== 'SELECT')) {
+        showBar();
+      }
+    }, 150);
   });
-}
+
+  // 2차: visualViewport (키보드 상태 이중 확인)
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function(){
+      var ratio = window.visualViewport.height / screen.height;
+      if (ratio > 0.8 && isKeyboardOpen) {
+        // 키보드가 닫혔는데 아직 bar가 숨겨진 상태 → 강제 복원
+        showBar();
+      }
+    });
+  }
+
+  // 3차: window resize fallback (일부 웹뷰)
+  window.addEventListener('resize', function(){
+    if (!isKeyboardOpen) return;
+    setTimeout(function(){
+      if (!document.activeElement ||
+          (document.activeElement.tagName !== 'INPUT' &&
+           document.activeElement.tagName !== 'TEXTAREA' &&
+           document.activeElement.tagName !== 'SELECT')) {
+        showBar();
+      }
+    }, 400);
+  });
+})();
 
   document.getElementById('txDate').value=new Date().toISOString().split('T')[0];
   document.getElementById('transferDate').value=new Date().toISOString().split('T')[0];if(localStorage.getItem('gaebub_key'))document.getElementById('keyStatus').textContent='✅ API 키가 설정되어 있어요.';refresh();}
@@ -1365,4 +1411,4 @@ document.getElementById('authPw').addEventListener('keydown',e=>{if(e.key==='Ent
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(()=>{});}</script>
 </body>
 </html>
-<!-- 가계부 v2.0.4 | 빌드: 2026.03.26 21:25:45 (KST) -->
+<!-- 가계부 v2.1.1 | 빌드: 2026.03.27 01:15:00 (KST) -->
