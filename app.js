@@ -847,81 +847,58 @@ function checkSharedContent() {
 
 function init(){
 
-// iOS 하단바 키보드 대응 v2 (position 기반, 확실한 복원)
+// iOS 하단바 키보드 대응
 (function(){
   const bar = document.querySelector('.bottom-bar');
-  const body = document.querySelector('.body');
   if (!bar) return;
 
-  let isKeyboardOpen = false;
+  let kbOpen = false;
+  let showTimer = null;
+
+  function isInputActive() {
+    const ae = document.activeElement;
+    return ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.tagName === 'SELECT');
+  }
 
   function hideBar() {
-    if (isKeyboardOpen) return;
-    isKeyboardOpen = true;
-    bar.style.transform = 'translateY(100%)';
+    if (kbOpen) return;
+    kbOpen = true;
+    clearTimeout(showTimer);
+    bar.style.transform = 'translateY(150%)';
     bar.style.pointerEvents = 'none';
   }
 
   function showBar() {
-    if (!isKeyboardOpen) return;
-    isKeyboardOpen = false;
-    // iOS Safari 뷰포트 복원 대기 후 강제 리페인트
-    setTimeout(function(){
-      bar.style.transform = 'translateY(0)';
+    clearTimeout(showTimer);
+    showTimer = setTimeout(function() {
+      if (isInputActive()) return;
+      kbOpen = false;
+      // transform 인라인 스타일 완전 제거로 CSS 기본값 복원
+      bar.style.transform = '';
       bar.style.pointerEvents = '';
-      // iOS에서 fixed 요소 위치 꼬임 방지: 강제 reflow
-      bar.style.display = 'none';
-      bar.offsetHeight; // force reflow
-      bar.style.display = '';
-      // 스크롤 위치 보정
-      if (body) body.scrollTop = body.scrollTop;
-    }, 350);
+    }, 500);
   }
 
-  // 1차: focusin/focusout (가장 빠른 반응)
-  document.addEventListener('focusin', function(e){
-    var t = e.target;
-    if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT') {
-      // type=date, type=select 등 키보드 안 뜨는 것도 있으므로 약간 지연
+  document.addEventListener('focusin', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
       setTimeout(hideBar, 50);
     }
   });
 
-  document.addEventListener('focusout', function(){
-    // 다른 input으로 포커스 이동하는 경우 대비 지연
-    setTimeout(function(){
-      if (!document.activeElement ||
-          (document.activeElement.tagName !== 'INPUT' &&
-           document.activeElement.tagName !== 'TEXTAREA' &&
-           document.activeElement.tagName !== 'SELECT')) {
-        showBar();
-      }
-    }, 150);
+  document.addEventListener('focusout', function() {
+    setTimeout(showBar, 50);
   });
 
-  // 2차: visualViewport (키보드 상태 이중 확인)
   if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', function(){
-      var ratio = window.visualViewport.height / screen.height;
-      if (ratio > 0.8 && isKeyboardOpen) {
-        // 키보드가 닫혔는데 아직 bar가 숨겨진 상태 → 강제 복원
+    window.visualViewport.addEventListener('resize', function() {
+      const ratio = window.visualViewport.height / window.innerHeight;
+      if (ratio < 0.75) {
+        hideBar();
+      } else if (kbOpen) {
         showBar();
       }
     });
   }
-
-  // 3차: window resize fallback (일부 웹뷰)
-  window.addEventListener('resize', function(){
-    if (!isKeyboardOpen) return;
-    setTimeout(function(){
-      if (!document.activeElement ||
-          (document.activeElement.tagName !== 'INPUT' &&
-           document.activeElement.tagName !== 'TEXTAREA' &&
-           document.activeElement.tagName !== 'SELECT')) {
-        showBar();
-      }
-    }, 400);
-  });
 })();
 
   document.getElementById('txDate').value=new Date().toISOString().split('T')[0];
