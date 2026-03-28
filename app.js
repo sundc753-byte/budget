@@ -847,6 +847,20 @@ function checkSharedContent() {
 
 function init(){
 
+// iOS Safari VisualViewport API - 키보드 열릴 때 appScreen bottom 조정
+// 출처: https://tkte.ch/articles/2019/09/23/safari-13-mobile-keyboards-and-the-visualviewport-api.html
+(function(){
+  if(!window.visualViewport) return;
+  var appScreen = document.getElementById('appScreen');
+  if(!appScreen) return;
+  function onVVChange(){
+    var vv = window.visualViewport;
+    var keyboardH = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+    appScreen.style.bottom = keyboardH + 'px';
+  }
+  window.visualViewport.addEventListener('resize', onVVChange);
+  window.visualViewport.addEventListener('scroll', onVVChange);
+})();
 
   document.getElementById('txDate').value=new Date().toISOString().split('T')[0];
   document.getElementById('transferDate').value=new Date().toISOString().split('T')[0];if(localStorage.getItem('gaebub_key'))document.getElementById('keyStatus').textContent='✅ API 키가 설정되어 있어요.';refresh();}

@@ -1,10 +1,10 @@
 {
-  "version": "2.3.2",
+  "version": "2.3.3",
   "build": "2026.03.28 (KST)",
   "changelog": {
-    "2.3.2": "하단 탭바 리디자인 - frosted glass, 상단 인디케이터, 아이콘 fill 활성화, 44px 터치타겟",
-    "2.3.1": "하단 탭바 safe area 확장, 아이콘/폰트 사이즈 업",
-    "2.3.0": "탭바 하단 복귀 + interactive-widget=resizes-content 키보드 근본 해결",
+    "2.3.3": "VisualViewport API로 iOS Safari 키보드 대응 - appScreen bottom 직접 제어 (interactive-widget은 iOS 미지원임을 확인)",
+    "2.3.2": "하단 탭바 리디자인 - frosted glass, 상단 인디케이터, fill 활성화",
+    "2.3.0": "탭바 하단 복귀 + interactive-widget=resizes-content 시도",
     "2.2.0": "탭바 하단→상단 이동, 캐시 자동 갱신 적용"
   }
 }
