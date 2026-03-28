@@ -1,9 +1,9 @@
-<!-- 가계부 v2.2.4 | 빌드: 2026.03.28 (KST) -->
+<!-- 가계부 v2.3.0 | 빌드: 2026.03.28 (KST) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=overlays-content"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="가계부"/>
@@ -36,7 +36,7 @@
 <div id="appScreen">
   <div class="topnav">
     <div class="topnav-row">
-      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v2.2.4</span></span>
+      <span class="app-title">💰 가계부 <span style="font-size:10px;font-weight:400;color:var(--t2);background:var(--bg);padding:2px 6px;border-radius:8px;cursor:pointer" onclick="showVersionInfo()">v2.3.0</span></span>
       <div class="user-info">
         <span class="user-email" id="userEmail"></span>
         <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -54,33 +54,6 @@
     </div>
   </div>
   <div class="sync-bar" id="syncBar"><div class="sync-line" id="syncLine"></div></div>
-
-  <div class="top-tab-bar">
-    <button class="top-tab active" id="bt-record" onclick="switchTab('record',this)">
-      <svg viewBox="0 0 24 24"><path d="M12 5H7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      <span>기록</span>
-    </button>
-    <button class="top-tab" id="bt-asset" onclick="switchTab('asset',this)">
-      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-      <span>자산</span>
-    </button>
-    <button class="top-tab" id="bt-chart" onclick="switchTab('chart',this)">
-      <svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
-      <span>분석</span>
-    </button>
-    <button class="top-tab" id="bt-budget" onclick="switchTab('budget',this)">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-      <span>예산</span>
-    </button>
-    <button class="top-tab" id="bt-settings" onclick="switchTab('settings',this)">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      <span>설정</span>
-    </button>
-    <button class="top-tab" id="bt-ai" onclick="switchTab('ai',this)">
-      <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 3-1.8 5.6-4.5 6.7V17h-5v-1.3C6.8 14.6 5 12 5 9a7 7 0 0 1 7-7z"/><path d="M9 21h6"/><path d="M10 17v4"/><path d="M14 17v4"/></svg>
-      <span>AI</span>
-    </button>
-  </div>
 
   <div class="body">
     <div id="p-record" class="panel active">
@@ -251,6 +224,33 @@
         <button class="ai-btn" id="aiBtn" onclick="runAI()">✦ 분석 시작</button>
       </div>
     </div>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="bot-tab active" id="bt-record" onclick="switchTab('record',this)">
+      <svg viewBox="0 0 24 24"><path d="M12 5H7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      <span class="label">기록</span>
+    </button>
+    <button class="bot-tab" id="bt-asset" onclick="switchTab('asset',this)">
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      <span class="label">자산</span>
+    </button>
+    <button class="bot-tab" id="bt-chart" onclick="switchTab('chart',this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
+      <span class="label">분석</span>
+    </button>
+    <button class="bot-tab" id="bt-budget" onclick="switchTab('budget',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      <span class="label">예산</span>
+    </button>
+    <button class="bot-tab" id="bt-settings" onclick="switchTab('settings',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span class="label">설정</span>
+    </button>
+    <button class="bot-tab" id="bt-ai" onclick="switchTab('ai',this)">
+      <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 3-1.8 5.6-4.5 6.7V17h-5v-1.3C6.8 14.6 5 12 5 9a7 7 0 0 1 7-7z"/><path d="M9 21h6"/><path d="M10 17v4"/><path d="M14 17v4"/></svg>
+      <span class="label">AI</span>
+    </button>
   </div>
 
 </div>

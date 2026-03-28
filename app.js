@@ -325,7 +325,7 @@ window.exportCSVAll=function(){if(!txs.length){alert('데이터가 없어요');r
 window.changeMonth=function(d){curMonth+=d;if(curMonth<0){curMonth=11;curYear--;}if(curMonth>11){curMonth=0;curYear++;}refresh();renderBudgets();};
 window.switchTab=function(name,btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.top-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.bot-tab').forEach(b=>b.classList.remove('active'));
   document.getElementById('p-'+name).classList.add('active');
   btn.classList.add('active');
   if(name==='chart')renderChart();
@@ -847,26 +847,6 @@ function checkSharedContent() {
 
 function init(){
 
-// iOS Safari 키보드 하단 빈공간 방지 - CSS flex에 위임, scroll drift만 보정
-(function(){
-  var bodyEl = document.querySelector('.body');
-  function resetScroll(){
-    window.scrollTo(0,0);
-    if(document.scrollingElement) document.scrollingElement.scrollTop=0;
-    // flex 재계산 트리거: minHeight 토글
-    if(bodyEl){ bodyEl.style.minHeight='1px'; void bodyEl.offsetHeight; bodyEl.style.minHeight=''; }
-  }
-  // visualViewport 높이가 커지면(키보드 닫힘) 보정
-  if(window.visualViewport){
-    var prevH=window.visualViewport.height;
-    window.visualViewport.addEventListener('resize',function(){
-      var h=window.visualViewport.height;
-      if(h>prevH+30) setTimeout(resetScroll,50);
-      prevH=h;
-    });
-  }
-  document.addEventListener('focusout',function(){ setTimeout(resetScroll,300); });
-})();
 
   document.getElementById('txDate').value=new Date().toISOString().split('T')[0];
   document.getElementById('transferDate').value=new Date().toISOString().split('T')[0];if(localStorage.getItem('gaebub_key'))document.getElementById('keyStatus').textContent='✅ API 키가 설정되어 있어요.';refresh();}
