@@ -1,12 +1,13 @@
 {
-  "version": "2.3.5",
+  "version": "2.3.7",
   "build": "2026.03.28 (KST)",
   "changelog": {
+    "2.3.7": "iOS 26 대응 - constant() 제거, offsetTop 버그 우회",
+    "2.3.6": "safe area constant()+env() 정리",
     "2.3.5": "safe-fill 제거, 탭바 padding-bottom으로 safe area 통합",
-    "2.3.4": "safe area를 하단 탭바와 동일한 색으로 명시적 채움",
+    "2.3.4": "safe area를 하단 탭바와 동일한 색으로 채움",
     "2.3.3": "VisualViewport API로 iOS Safari 키보드 대응",
     "2.3.2": "하단 탭바 리디자인 - frosted glass, 인디케이터, fill 활성화",
-    "2.3.1": "하단 탭바 safe area 확장, 아이콘/폰트 사이즈 업",
     "2.3.0": "탭바 하단 복귀",
     "2.2.0": "탭바 상단 이동, 캐시 자동 갱신 적용"
   }
