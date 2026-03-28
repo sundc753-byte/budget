@@ -847,22 +847,19 @@ function checkSharedContent() {
 
 function init(){
 
-// iOS 키보드 닫힌 후 하단 빈공간 방지
+// iOS 키보드 하단 빈공간 방지 - appScreen 높이를 visualViewport에 고정
 (function(){
-  if(!window.visualViewport) return;
+  const appScreen = document.getElementById('appScreen');
   const body = document.querySelector('.body');
-  window.visualViewport.addEventListener('resize', function(){
-    // 뷰포트가 복원되면 스크롤 위치 강제 재계산
-    requestAnimationFrame(function(){
-      window.scrollTo(0, 0);
-      if(body) body.style.paddingBottom = '';
-    });
-  });
-  document.addEventListener('focusout', function(){
-    setTimeout(function(){
-      window.scrollTo(0, 0);
-    }, 100);
-  });
+  function fixHeight(){
+    const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    if(appScreen) appScreen.style.height = h + 'px';
+    if(body) body.style.paddingBottom = '';
+  }
+  if(window.visualViewport) window.visualViewport.addEventListener('resize', fixHeight);
+  window.addEventListener('resize', fixHeight);
+  document.addEventListener('focusout', function(){ setTimeout(fixHeight, 150); });
+  fixHeight();
 })();
 
   document.getElementById('txDate').value=new Date().toISOString().split('T')[0];
