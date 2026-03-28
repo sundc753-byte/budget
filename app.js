@@ -798,13 +798,14 @@ window.showVersionInfo=async function(){
   }catch(e){html='<div style="color:var(--t2);font-size:13px">버전 정보를 불러올 수 없어요.</div>';}
 
   const overlay=document.createElement('div');
+  overlay.id='versionOverlay';
   overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9000;display:flex;align-items:flex-end;justify-content:center';
   overlay.innerHTML=`
     <div style="background:var(--sf);border-radius:20px 20px 0 0;padding:20px 16px;padding-bottom:max(env(safe-area-inset-bottom,0px),24px);width:100%;max-height:70vh;overflow-y:auto">
       <div style="width:40px;height:4px;background:var(--bd);border-radius:2px;margin:0 auto 16px"></div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <span style="font-size:17px;font-weight:700;color:var(--tx)">업데이트 내역</span>
-        <button onclick="this.closest('[style*=inset]').remove()" style="background:var(--bg);border:none;border-radius:8px;padding:6px 10px;font-size:13px;color:var(--t2);cursor:pointer">닫기</button>
+        <button onclick="document.getElementById('versionOverlay').remove()" style="background:var(--bg);border:none;border-radius:8px;padding:6px 10px;font-size:13px;color:var(--t2);cursor:pointer">닫기</button>
       </div>
       ${html}
       <button onclick="if(confirm('캐시를 초기화할까요?'))clearCache()" style="width:100%;margin-top:16px;padding:12px;background:none;border:1.5px solid var(--bd);border-radius:10px;font-size:14px;color:var(--t2);cursor:pointer">캐시 초기화</button>
