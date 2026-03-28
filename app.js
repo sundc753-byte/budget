@@ -847,71 +847,25 @@ function checkSharedContent() {
 
 function init(){
 
-// iOS Safari 키보드 닫힌 후 하단 빈공간 근본 수정
+// iOS Safari 키보드 하단 빈공간 방지 - CSS flex에 위임, scroll drift만 보정
 (function(){
-  const appScreen = document.getElementById('appScreen');
-  const bodyEl = document.querySelector('.body');
-  let _ticking = false;
-
-  function fixLayout(isKeyboardClose){
-    if(_ticking) return;
-    _ticking = true;
-    requestAnimationFrame(function(){
-      _ticking = false;
-      // scrollY가 0이 아니면 fixed 레이아웃이 밀리므로 강제 리셋
-      if(window.scrollY !== 0 || (document.scrollingElement && document.scrollingElement.scrollTop !== 0)){
-        window.scrollTo(0, 0);
-        if(document.scrollingElement) document.scrollingElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-      }
-
-      // appScreen은 height inline 제거, top/bottom으로만 제어
-      if(appScreen){
-        appScreen.style.height = '';
-      }
-
-      if(isKeyboardClose){
-        // iOS가 레이아웃을 즉시 재계산하지 않으므로 DOM reflow 강제 트리거
-        document.documentElement.style.display = 'none';
-        // eslint-disable-next-line no-unused-expressions
-        document.documentElement.offsetHeight; // reflow
-        document.documentElement.style.display = '';
-      }
-
-      // .body 높이를 고정 헤더들 실제 높이 기준으로 직접 계산
-      if(bodyEl && appScreen){
-        const vph = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-        const topnav = appScreen.querySelector('.topnav');
-        const syncBar = appScreen.querySelector('.sync-bar');
-        const tabBar = appScreen.querySelector('.top-tab-bar');
-        const fixedH = (topnav ? topnav.offsetHeight : 0)
-                      + (syncBar ? syncBar.offsetHeight : 0)
-                      + (tabBar ? tabBar.offsetHeight : 0);
-        bodyEl.style.height = (vph - fixedH) + 'px';
-        bodyEl.style.paddingBottom = '';
-      }
-    });
+  var bodyEl = document.querySelector('.body');
+  function resetScroll(){
+    window.scrollTo(0,0);
+    if(document.scrollingElement) document.scrollingElement.scrollTop=0;
+    // flex 재계산 트리거: minHeight 토글
+    if(bodyEl){ bodyEl.style.minHeight='1px'; void bodyEl.offsetHeight; bodyEl.style.minHeight=''; }
   }
-
-  function onKeyboardClose(){
-    // 딜레이를 두 번(300ms, 600ms) 실행해 iOS 키보드 애니메이션 완료 후 확실히 재계산
-    setTimeout(function(){ fixLayout(true); }, 300);
-    setTimeout(function(){ fixLayout(true); }, 600);
-  }
-
+  // visualViewport 높이가 커지면(키보드 닫힘) 보정
   if(window.visualViewport){
-    window.visualViewport.addEventListener('resize', function(){
-      // offsetTop이 0이면 키보드 닫힌 상태
-      if(window.visualViewport.offsetTop === 0 && window.visualViewport.height >= window.innerHeight * 0.85){
-        onKeyboardClose();
-      } else {
-        fixLayout(false);
-      }
+    var prevH=window.visualViewport.height;
+    window.visualViewport.addEventListener('resize',function(){
+      var h=window.visualViewport.height;
+      if(h>prevH+30) setTimeout(resetScroll,50);
+      prevH=h;
     });
   }
-  window.addEventListener('resize', function(){ fixLayout(false); });
-  document.addEventListener('focusout', onKeyboardClose);
-  fixLayout(false);
+  document.addEventListener('focusout',function(){ setTimeout(resetScroll,300); });
 })();
 
   document.getElementById('txDate').value=new Date().toISOString().split('T')[0];

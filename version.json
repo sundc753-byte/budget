@@ -1,11 +1,11 @@
 {
-  "version": "2.2.3",
+  "version": "2.2.4",
   "build": "2026.03.28 (KST)",
   "changelog": {
-    "2.2.3": "iOS Safari 키보드 닫힌 후 하단 빈공간 완전 수정 - DOM reflow 강제 트리거, scrollTo 리셋, .body 높이 직접 계산",
-    "2.2.2": "iOS 키보드 하단 빈공간 근본 수정 - visualViewport 기반 높이 제어",
+    "2.2.4": "iOS 키보드 빈공간 수정 - JS 높이 계산 제거, CSS flex에 위임 + html/body overflow:hidden",
+    "2.2.3": "iOS Safari 키보드 닫힌 후 하단 빈공간 완전 수정 시도 - DOM reflow 강제 트리거",
+    "2.2.2": "iOS 키보드 하단 빈공간 근본 수정 시도 - visualViewport 기반 높이 제어",
     "2.2.1": "iOS 키보드 닫힌 후 하단 빈공간 버그 수정 시도",
-    "2.2.0": "탭바 하단→상단 이동 (iOS 키보드 메뉴바 이슈 근본 해결), 캐시 자동 갱신 적용",
-    "2.1.1": "파일 분리 (index.html / style.css / app.js), iOS 키보드 하단바 수정 시도"
+    "2.2.0": "탭바 하단→상단 이동 (iOS 키보드 메뉴바 이슈 근본 해결), 캐시 자동 갱신 적용"
   }
 }
