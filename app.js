@@ -877,18 +877,24 @@ function checkSharedContent() {
 function init(){
 
 // iOS Safari VisualViewport API - 키보드 열릴 때 appScreen bottom 조정
-// 출처: https://tkte.ch/articles/2019/09/23/safari-13-mobile-keyboards-and-the-visualviewport-api.html
+// iOS 26 회귀버그: offsetTop이 키보드 닫힌 후 0으로 미복귀 → offsetTop 미사용
 (function(){
   if(!window.visualViewport) return;
   var appScreen = document.getElementById('appScreen');
   if(!appScreen) return;
   function onVVChange(){
     var vv = window.visualViewport;
-    var keyboardH = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+    var keyboardH = Math.max(0, window.innerHeight - vv.height);
     appScreen.style.bottom = keyboardH + 'px';
   }
   window.visualViewport.addEventListener('resize', onVVChange);
-  window.visualViewport.addEventListener('scroll', onVVChange);
+  // iOS 26 회귀버그 워크어라운드: focusout 후 스크롤 강제 리셋
+  document.addEventListener('focusout', function(){
+    setTimeout(function(){
+      window.scrollBy(0, -1);
+      window.scrollBy(0, 1);
+    }, 100);
+  });
 })();
 
   document.getElementById('txDate').value=new Date().toISOString().split('T')[0];
