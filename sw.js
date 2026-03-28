@@ -1,5 +1,5 @@
-/* 가계부 v2.2.0 | 2026.03.28 09:18:37 (KST) */
-const CACHE = 'gaebub-v2.2.0';
+/* 가계부 v2.2.1 | 2026.03.28 09:25:13 (KST) */
+const CACHE = 'gaebub-v2.2.1';
 const ASSETS = ['/manifest.json'];
 
 self.addEventListener('install', e => {

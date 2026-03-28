@@ -783,7 +783,7 @@ window.saveItemEdit = async function() {
 };
 
 window.saveKey=function(){const k=document.getElementById('keyInput').value.trim();if(!k)return;localStorage.setItem('gaebub_key',k);document.getElementById('keyInput').value='';document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';};
-window.showVersionInfo=function(){if(confirm('가계부 v2.2.0\n빌드: 2026.03.28 09:18:37 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
+window.showVersionInfo=function(){if(confirm('가계부 v2.2.1\n빌드: 2026.03.28 09:25:13 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
 window.clearCache=async function(){try{if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistrations();for(const x of r)await x.unregister();}if('caches' in window){const k=await caches.keys();for(const x of k)await caches.delete(x);}alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');const sp=document.getElementById('splash')||document.createElement('div');
     if(!document.getElementById('splash')){sp.id='splash';sp.innerHTML='<div class="s-logo">💰</div><div class="s-title">가계부</div>';document.body.appendChild(sp);}
     sp.style.cssText='position:fixed;inset:0;background:#1D9E75;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999;opacity:1';setTimeout(()=>window.location.reload(true),300);}catch(e){alert('오류: '+e.message);}};
@@ -847,6 +847,23 @@ function checkSharedContent() {
 
 function init(){
 
+// iOS 키보드 닫힌 후 하단 빈공간 방지
+(function(){
+  if(!window.visualViewport) return;
+  const body = document.querySelector('.body');
+  window.visualViewport.addEventListener('resize', function(){
+    // 뷰포트가 복원되면 스크롤 위치 강제 재계산
+    requestAnimationFrame(function(){
+      window.scrollTo(0, 0);
+      if(body) body.style.paddingBottom = '';
+    });
+  });
+  document.addEventListener('focusout', function(){
+    setTimeout(function(){
+      window.scrollTo(0, 0);
+    }, 100);
+  });
+})();
 
   document.getElementById('txDate').value=new Date().toISOString().split('T')[0];
   document.getElementById('transferDate').value=new Date().toISOString().split('T')[0];if(localStorage.getItem('gaebub_key'))document.getElementById('keyStatus').textContent='✅ API 키가 설정되어 있어요.';refresh();}
