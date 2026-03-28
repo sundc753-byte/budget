@@ -15,7 +15,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 .auth-inp:focus{outline:none;border-color:var(--a)}
 .auth-btn{padding:14px;background:var(--a);border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;width:100%}
 .auth-btn:disabled{opacity:0.5}.auth-err{font-size:13px;color:#A32D2D;text-align:center;min-height:16px}
-#appScreen{display:none;position:fixed;top:0;left:0;right:0;bottom:0;flex-direction:column;width:100%}
+#appScreen{display:none;position:fixed;top:0;left:0;right:0;bottom:0;flex-direction:column;width:100%;overflow:hidden}
 #appScreen.on{display:flex}
 .topnav{background:var(--sf);border-bottom:0.5px solid var(--bd);padding:8px 16px 0;flex-shrink:0;padding-top:max(env(safe-area-inset-top,0px),44px);overflow:hidden}
 .topnav-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:6px}
@@ -34,7 +34,7 @@ body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:
 .sync-bar{height:2px;background:var(--sf);overflow:hidden;flex-shrink:0}
 .sync-line{height:100%;width:0;background:var(--a);transition:width 0.3s}
 .syncing .sync-line{width:100%;transition:width 1.5s}
-.body{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--bg);min-height:0;height:0;padding-bottom:env(safe-area-inset-bottom,20px)}
+.body{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--bg);min-height:0;height:0;padding-bottom:0}
 .panel{display:none;padding:12px 16px 24px;width:100%}.panel.active{display:block}
 .add-form{background:var(--sf);border-radius:var(--r);padding:14px;margin-bottom:12px}
 .type-toggle{display:flex;gap:6px;margin-bottom:10px}
