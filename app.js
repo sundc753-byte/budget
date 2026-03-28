@@ -783,7 +783,35 @@ window.saveItemEdit = async function() {
 };
 
 window.saveKey=function(){const k=document.getElementById('keyInput').value.trim();if(!k)return;localStorage.setItem('gaebub_key',k);document.getElementById('keyInput').value='';document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';};
-window.showVersionInfo=function(){if(confirm('가계부 v2.2.1\n빌드: 2026.03.28 09:25:13 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
+window.showVersionInfo=async function(){
+  let html='<div style="font-size:13px;color:var(--t2);margin-bottom:16px">불러오는 중...</div>';
+  try{
+    const r=await fetch('/version.json?t='+Date.now());
+    const d=await r.json();
+    const rows=Object.entries(d.changelog).map(([v,desc])=>
+      `<div style="display:flex;gap:10px;margin-bottom:10px;align-items:flex-start">
+        <span style="font-size:12px;font-weight:700;color:var(--a);white-space:nowrap;min-width:36px">v${v}</span>
+        <span style="font-size:13px;color:var(--tx);line-height:1.5">${desc}</span>
+      </div>`
+    ).join('');
+    html=`<div style="font-size:12px;color:var(--t2);margin-bottom:14px">빌드: ${d.build}</div>${rows}`;
+  }catch(e){html='<div style="color:var(--t2);font-size:13px">버전 정보를 불러올 수 없어요.</div>';}
+
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9000;display:flex;align-items:flex-end;justify-content:center';
+  overlay.innerHTML=`
+    <div style="background:var(--sf);border-radius:20px 20px 0 0;padding:20px 16px;padding-bottom:max(env(safe-area-inset-bottom,0px),24px);width:100%;max-height:70vh;overflow-y:auto">
+      <div style="width:40px;height:4px;background:var(--bd);border-radius:2px;margin:0 auto 16px"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <span style="font-size:17px;font-weight:700;color:var(--tx)">업데이트 내역</span>
+        <button onclick="this.closest('[style*=inset]').remove()" style="background:var(--bg);border:none;border-radius:8px;padding:6px 10px;font-size:13px;color:var(--t2);cursor:pointer">닫기</button>
+      </div>
+      ${html}
+      <button onclick="if(confirm('캐시를 초기화할까요?'))clearCache()" style="width:100%;margin-top:16px;padding:12px;background:none;border:1.5px solid var(--bd);border-radius:10px;font-size:14px;color:var(--t2);cursor:pointer">캐시 초기화</button>
+    </div>`;
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
+  document.body.appendChild(overlay);
+};
 window.clearCache=async function(){try{if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistrations();for(const x of r)await x.unregister();}if('caches' in window){const k=await caches.keys();for(const x of k)await caches.delete(x);}alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');const sp=document.getElementById('splash')||document.createElement('div');
     if(!document.getElementById('splash')){sp.id='splash';sp.innerHTML='<div class="s-logo">💰</div><div class="s-title">가계부</div>';document.body.appendChild(sp);}
     sp.style.cssText='position:fixed;inset:0;background:#1D9E75;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999;opacity:1';setTimeout(()=>window.location.reload(true),300);}catch(e){alert('오류: '+e.message);}};
