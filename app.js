@@ -325,7 +325,7 @@ window.exportCSVAll=function(){if(!txs.length){alert('데이터가 없어요');r
 window.changeMonth=function(d){curMonth+=d;if(curMonth<0){curMonth=11;curYear--;}if(curMonth>11){curMonth=0;curYear++;}refresh();renderBudgets();};
 window.switchTab=function(name,btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.bot-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.top-tab').forEach(b=>b.classList.remove('active'));
   document.getElementById('p-'+name).classList.add('active');
   btn.classList.add('active');
   if(name==='chart')renderChart();
@@ -783,7 +783,7 @@ window.saveItemEdit = async function() {
 };
 
 window.saveKey=function(){const k=document.getElementById('keyInput').value.trim();if(!k)return;localStorage.setItem('gaebub_key',k);document.getElementById('keyInput').value='';document.getElementById('keyStatus').textContent='✅ API 키가 저장되었어요!';};
-window.showVersionInfo=function(){if(confirm('가계부 v2.1.1\n빌드: 2026.03.27 01:15:00 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
+window.showVersionInfo=function(){if(confirm('가계부 v2.2.0\n빌드: 2026.03.28 09:18:37 (KST)\n\n캐시·쿠키를 초기화하시겠어요?')) clearCache();};
 window.clearCache=async function(){try{if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistrations();for(const x of r)await x.unregister();}if('caches' in window){const k=await caches.keys();for(const x of k)await caches.delete(x);}alert('✅ 캐시가 초기화되었어요!\n앱이 새로고침됩니다.');const sp=document.getElementById('splash')||document.createElement('div');
     if(!document.getElementById('splash')){sp.id='splash';sp.innerHTML='<div class="s-logo">💰</div><div class="s-title">가계부</div>';document.body.appendChild(sp);}
     sp.style.cssText='position:fixed;inset:0;background:#1D9E75;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999;opacity:1';setTimeout(()=>window.location.reload(true),300);}catch(e){alert('오류: '+e.message);}};
@@ -847,59 +847,6 @@ function checkSharedContent() {
 
 function init(){
 
-// iOS 하단바 키보드 대응
-(function(){
-  const bar = document.querySelector('.bottom-bar');
-  if (!bar) return;
-
-  let kbOpen = false;
-  let showTimer = null;
-
-  function isInputActive() {
-    const ae = document.activeElement;
-    return ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.tagName === 'SELECT');
-  }
-
-  function hideBar() {
-    if (kbOpen) return;
-    kbOpen = true;
-    clearTimeout(showTimer);
-    bar.style.transform = 'translateY(150%)';
-    bar.style.pointerEvents = 'none';
-  }
-
-  function showBar() {
-    clearTimeout(showTimer);
-    showTimer = setTimeout(function() {
-      if (isInputActive()) return;
-      kbOpen = false;
-      // transform 인라인 스타일 완전 제거로 CSS 기본값 복원
-      bar.style.transform = '';
-      bar.style.pointerEvents = '';
-    }, 500);
-  }
-
-  document.addEventListener('focusin', function(e) {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
-      setTimeout(hideBar, 50);
-    }
-  });
-
-  document.addEventListener('focusout', function() {
-    setTimeout(showBar, 50);
-  });
-
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', function() {
-      const ratio = window.visualViewport.height / window.innerHeight;
-      if (ratio < 0.75) {
-        hideBar();
-      } else if (kbOpen) {
-        showBar();
-      }
-    });
-  }
-})();
 
   document.getElementById('txDate').value=new Date().toISOString().split('T')[0];
   document.getElementById('transferDate').value=new Date().toISOString().split('T')[0];if(localStorage.getItem('gaebub_key'))document.getElementById('keyStatus').textContent='✅ API 키가 설정되어 있어요.';refresh();}
